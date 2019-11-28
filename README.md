@@ -113,13 +113,14 @@ Uninstall
 Changelog
 
 2019 11 torvista: under revision
+
 2019 10 torvista: put on Github.
 
 2013 Changes to v1392
-Added Delete from Linked Category
-Added Delete Specials
+Added Delete from Linked Category. Added Delete Specials
 
 2011 Multi-Product Copy Utility for Zen Cart ver 1.392 by Linda McGrath 2011-11-15
+
 Originally written for osCommerce as:
 Multi-Product Copy Utility v1.1 by Kevin L. Shelton 7/28/2010
 
