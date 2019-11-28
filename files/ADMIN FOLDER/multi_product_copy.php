@@ -9,15 +9,12 @@
  * $Id: multi_product_copy.php ver 1.393 by Linda McGrath 2013-01-17
  * $Id: multi_product_copy.php ver 1.394 by torvista 2019
  */
-/**
- * Main program
- */
-$show_images = false;//steve todo added
-
 require('includes/application_top.php');
+
+$show_images = false;//steve added todo
+
 require(DIR_WS_CLASSES . 'currencies.php');
 
-$currencies = new currencies();
 $currencies = new currencies();
 
 function list_subcategories($parent_id)
@@ -33,7 +30,9 @@ function list_subcategories($parent_id)
     return $list;
 }
 
-$action = (isset($_GET['action']) ? $_GET['action'] : 'new');
+$action = (!empty($_GET['action']) ? $_GET['action'] : 'new');
+$_POST['copy_as'] = !empty($_POST['copy_as']) ? $_POST['copy_as'] : 'link';//steve for php warning and set default action/radio button
+
 $messages = array();
 $error = false;
 if (($action == 'find') || ($action == 'confirm')) { //validate form
@@ -249,10 +248,10 @@ if (zen_not_null($action)) {
                         $_POST['products_id'] = $id;
                         $_POST['categories_id'] = $copy_to;
                         $product_type = zen_get_products_type($id);
-                        if (file_exists(DIR_WS_MODULES . $zc_products->get_handler($product_type) . '/copy_to_confirm.php')) {
-                            require(DIR_WS_MODULES . $zc_products->get_handler($product_type) . '/copy_to_confirm.php');
+                        if (file_exists(DIR_WS_MODULES . $zc_products->get_handler($product_type) . '/copy_product_confirm.php')) {
+                            require(DIR_WS_MODULES . $zc_products->get_handler($product_type) . '/copy_product_confirm.php');
                         } else {
-                            require(DIR_WS_MODULES . 'copy_to_confirm.php');
+                            require(DIR_WS_MODULES . 'copy_product_confirm.php');
                         }
 
                         if ($_POST['copy_specials'] == 'copy_specials_yes') {
@@ -387,14 +386,13 @@ if (zen_not_null($action)) {
     }
 }
 ?>
-<!-- start me here //-->
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-<!--steve doctype changed to stop quirks mode -->
+<!doctype html>
 <html <?php echo HTML_PARAMS; ?>>
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=<?php echo CHARSET; ?>">
-    <title><?php echo HEADING_TITLE; ?></title><!--steve edit-->
+    <title><?php echo TITLE; ?></title>>
     <link rel="stylesheet" type="text/css" href="includes/stylesheet.css">
+    <link rel="stylesheet" type="text/css" media="print" href="includes/stylesheet_print.css">
     <link rel="stylesheet" type="text/css" href="includes/cssjsmenuhover.css" media="all" id="hoverJS">
     <script src="includes/menu.js"></script>
     <script src="includes/general.js"></script>
@@ -416,12 +414,13 @@ if (zen_not_null($action)) {
         }
     </style>
 </head>
-<body bgcolor="#FFFFFF" onload="init()">
+<body onload="init()">
 <div id="spiffycalendar" class="text"></div>
 <!-- header //-->
-<?php require(DIR_WS_INCLUDES . 'header.php'); ?>
+<?php
+require(DIR_WS_INCLUDES . 'header.php');
+?>
 <!-- header_eof //-->
-
 <!-- body //-->
 <table border="0" width="100%" cellspacing="2" cellpadding="2">
     <tr>
@@ -458,8 +457,6 @@ if (zen_not_null($action)) {
                     echo '<tr><td class="main"><p class="pageHeading">' . HEADING_NEW . "</p>\n";
                     echo zen_draw_form('sale_entry', FILENAME_MULTI_COPY, 'action=find');
                     echo TEXT_HOW_TO_COPY . "<br />\n";
-
-                    $_POST['copy_as'] = !empty($_POST['copy_as']) ? $_POST['copy_as'] : '';//steve for php warning
 
                     echo zen_draw_radio_field('copy_as', 'deleted',
                             ($_POST['copy_as'] == 'deleted' ? true : false)) . ' ' . TEXT_COPY_AS_DELETED . '<br />' . "<br />\n";
