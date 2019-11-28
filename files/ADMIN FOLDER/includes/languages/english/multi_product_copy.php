@@ -97,7 +97,7 @@ define('TABLE_HEADING_STATUS', 'Status');
 define('TABLE_HEADING_LINKED', 'Linked');
 define('TABLE_HEADING_NAME', 'Product Name');
 define('TABLE_HEADING_MFG', 'Manufacturer');
-//define('TABLE_HEADING_MODEL', 'Product Model');
+define('TABLE_HEADING_MODEL', 'Product Model');//remove for ZC157 (in english.php)
 define('TABLE_HEADING_PRICE', 'Store Price');
 define('BUTTON_RETRY', 'Try Again');
 define('TEXT_DETAILS', 'Copy Details:');
