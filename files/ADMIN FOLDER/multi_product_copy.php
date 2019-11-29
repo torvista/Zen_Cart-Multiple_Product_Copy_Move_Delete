@@ -711,7 +711,8 @@ require(DIR_WS_INCLUDES . 'header.php');
                                                     }
                                                     //eof steve
                                                     ?>
-                                                    <tr class="dataTableRow"><?php //steve todo removed mouseover, shows cursor on most columns  onmouseover="rowOverEffect(this)" onmouseout="rowOutEffect(this)" ?>
+                                                    <tr class="dataTableRow"><?php //steve todo removed mouseover as shows cursor on most columns... to investigte. Was
+                                                        //  onmouseover="rowOverEffect(this)" onmouseout="rowOutEffect(this)" ?>
                                                         <td class="dataTableContent" align="center">
                                                             <?php
                                                             if ($copy_as != 'delete_one' || ($copy_as == 'delete_one' && zen_get_product_is_linked($product_multi->fields['products_id']) == 'true')) {
@@ -850,13 +851,14 @@ require(DIR_WS_INCLUDES . 'header.php');
                 <tr>
                     <td>
                         <?php
-                        echo sizeof($items_set) . TEXT_PRODUCTS_COPIED . "<p>\n";
-                        echo zen_draw_form('product_entry', FILENAME_CATEGORIES,
-                                'cPath=' . $copy_to) . zen_draw_input_field('cat', BUTTON_PRODUCT_ENTRY,
-                                'alt="' . BUTTON_PRODUCT_ENTRY . '"', false, 'submit') . '</form>&nbsp;&nbsp;';
-                        echo zen_draw_form('multi_product_copy', FILENAME_MULTI_COPY) . zen_draw_input_field('new',
-                                BUTTON_ANOTHER_COPY, 'alt="' . BUTTON_ANOTHER_COPY . '"', false,
-                                'submit') . "</form>\n";
+                        echo count($items_set) . TEXT_PRODUCTS_COPIED . "<p>\n";
+                        echo zen_draw_form('product_entry', FILENAME_CATEGORY_PRODUCT_LISTING,'cPath=' . $copy_to);
+                        echo zen_draw_input_field('cat', sprintf(BUTTON_GO_TO_CATEGORY, $copy_to, $copy_to_name), 'alt="' . sprintf(BUTTON_GO_TO_CATEGORY, $copy_to, $copy_to_name) . '"', false, 'submit');
+                        echo '</form>&nbsp;&nbsp;';
+
+                        echo zen_draw_form('multi_product_copy', FILENAME_MULTI_COPY);
+                        echo zen_draw_input_field('new', BUTTON_ANOTHER_COPY, 'alt="' . BUTTON_ANOTHER_COPY . '"', false, 'submit');
+                        echo "</form>\n";
                         }
                         ?>
             </table>
