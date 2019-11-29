@@ -8,11 +8,8 @@
  * $Id: multi_product_copy.php ver 1.392 by Linda McGrath 2011-11-15
  * $Id: multi_product_copy.php ver 1.394 by torvista 2019
 */
-/**
- * language definitions
-*/
 
-define('HEADING_TITLE', "Multi-Product Copy Utility");
+define('HEADING_TITLE', 'Multi-Product Copy Utility');
 define('ERROR_ENTRY_REQUIRED', 'Entry is missing! Either at least one search term must be entered or else the category or manufacturer drop down must be set to a value or one of the Price fields must have a numeric value!');
 define('HEADING_NEW', 'New Copy as Duplicate, Copy as Linked or Delete');
 define('TEXT_TIPS', '<b>Notes:</b><ul>
@@ -29,7 +26,7 @@ define('TEXT_TIPS', '<b>Notes:</b><ul>
 <li>Product Discount Quantities can be optionally copied.</li>
 <li>Music Products Media Manager collections can be optionally copied.</li>
 <li>Reviews are NOT copied.</li></ul>
-<b>When Deleting Products:</b><br />
+<b>When Deleting Products:</b><br>
 <b>Delete Products permanently from ALL Categories?</b><ul>
 <li>Deletions are permanent and cannot be undone</li>
 <li>If the Main Image is unique, it will be removed, as will the Main Image Medium and Large Image</li>
@@ -39,16 +36,16 @@ define('TEXT_TIPS', '<b>Notes:</b><ul>
 <li>If that Category is the master_categories_id, the master_categories_id will be reset.</li>
 </ul>
 <strong>Examples:</strong>
-<p>To copy as NEW Duplicate Products from one Category to another, select the <strong>Copy or Move Found Products to Destination Category</strong> and select the <strong>Search From Category</strong>. You can optionally include subcategories.<br /></p>
-<p>To search for Products, you can enter search words in the <strong>Find products matching the following terms</strong>; and, optionally select a Category to search from.<br />And base the search on:  Search On Product Name, Model & Manufacturer Only -or- Search In Product Descriptions Also.<br /></p>
+<p>To copy as NEW Duplicate Products from one Category to another, select the <strong>Copy or Move Found Products to Destination Category</strong> and select the <strong>Search From Category</strong>. You can optionally include subcategories.<br></p>
+<p>To search for Products, you can enter search words in the <strong>Find products matching the following terms</strong>; and, optionally select a Category to search from.<br>And base the search on:  Search On Product Name, Model & Manufacturer Only -or- Search In Product Descriptions Also.<br></p>
 <p>To search based on Manufacturer, select a Manufacturer from the drop down; this can then be limited to a Category or by using the search terms.</p>');
 
 define('TEXT_SELECT_PRODUCTS', 'Please make sure that only those products that should be COPIED have the checkbox marked.');
-define('TEXT_SELECT_PRODUCTS_DELETED', 'Please make sure that only those products that should be DELETED have the checkbox marked.<br /><span class="alert">WARNING: Selected Products will be completely deleted and cannot be recovered!</span><br /><br />');
+define('TEXT_SELECT_PRODUCTS_DELETED', 'Please make sure that only those products that should be DELETED have the checkbox marked.<br><span class="alert">WARNING: Selected Products will be completely deleted and cannot be recovered!</span><br><br>');
 define('TEXT_SELECT_PRODUCTS_DELETE_ONE', 'Please make sure that only those products that should be DELETED have the checkbox marked.
-<br /><span class="alert">WARNING: Selected Products will be deleted from ONE Category. If the Products use this Category as their master_categories_id, the master_categories_id will be reset to the next available Category for the Products.</span><br />
-<strong>*** Products that are not Linked Products cannot be Deleted from this ONE Category. To Delete them completely, use the other Delete option to delete Products completely.</strong><br /><br />');
-define('TEXT_SELECT_PRODUCTS_DELETE_SPECIALS', 'Please make sure that only those products that should have the Specials DELETED have the checkbox marked.<br />Only Products with Specials are actually listed.<br />If the Special does not display, then the Special is not enabled.<br /><br />');
+<br><span class="alert">WARNING: Selected Products will be deleted from ONE Category. If the Products use this Category as their master_categories_id, the master_categories_id will be reset to the next available Category for the Products.</span><br>
+<strong>*** Products that are not Linked Products cannot be Deleted from this ONE Category. To Delete them completely, use the other Delete option to delete Products completely.</strong><br><br>');
+define('TEXT_SELECT_PRODUCTS_DELETE_SPECIALS', 'Please make sure that only those products that should have the Specials DELETED have the checkbox marked.<br>Only Products with Specials are actually listed.<br>If the Special does not display, then the Special is not enabled.<br><br>');
 define('HEADING_SELECT_PRODUCT', 'Select Products To Copy');
 define('HEADING_SELECT_PRODUCT_DELETED', 'Select Products To Delete');
 define('HEADING_SELECT_PRODUCT_DELETE_ONE', 'Select Products To Delete from ');
@@ -85,8 +82,6 @@ define('TEXT_COPY_FEATURED','&nbsp;&nbsp;&nbsp;&nbsp;' . 'Copy any existing Feat
 define('TEXT_COPY_DISCOUNTS','&nbsp;&nbsp;&nbsp;&nbsp;' . 'Copy any existing Quantity Discounts associated with selected products:');
 define('TEXT_COPY_MEDIA_MANAGER','&nbsp;&nbsp;&nbsp;&nbsp;' . 'Copy any Media Manager collections associated with selected products:');
 
-//define('TEXT_YES', 'Yes');
-//define('TEXT_NO', 'No');
 define('TEXT_NAME_ONLY', 'Search On Product Name, Model & Manufacturer Only');
 define('TEXT_DESCRIPTIONS', 'Search In Product Descriptions Also');
 define('TEXT_NOT_FOUND', 'No products were found to match the search terms given. Or, Products are already in this Category.');
@@ -128,7 +123,7 @@ define('TEXT_ONLY_NOT_DEST', 'Only matching products not already linked to the d
 define('ENTRY_INC_SUBCATS', 'include subcategories');
 
 //define('TEXT_ATTRIBUTE_COPY_INSERTING','<strong>Inserting New Attribute from </strong>');//removed in ZC157
-define('TEXT_WARNING_CATEGORY_SUB', '<strong>Warning:</strong> Destination Category holds subcategories!<br />Categories should hold either Categories or Products, not both.<br />Products should NOT be Linked or Copied to Categories with subcategories.');
+define('TEXT_WARNING_CATEGORY_SUB', '<strong>Warning:</strong> Destination Category holds subcategories!<br>Categories should hold either Categories or Products, not both.<br>Products should NOT be Linked or Copied to Categories with subcategories.');
 
 define('TEXT_DUPLICATE_ATTRIBUTES', 'Copy Attributes: ');
 define('TEXT_DUPLICATE_SPECIALS', 'Copy Special Prices: ');
@@ -137,9 +132,9 @@ define('TEXT_DUPLICATE_QUANTITY_DISCOUNTS', 'Copy Quantity Discounts: ');
 define('TEXT_DUPLICATE_MEDIA', 'Copy Media Components: ');
 
 define('TEXT_MOVE_FROM_LINK', 'Move Products to another Category');
-define('TEXT_MOVE_PRODUCTS_CATEGORIES', 'NOTE: You have selected Products from multiple categories ...<br /> This will result in Products being moved from their Master Category to the NEW Category with the NEW Category being set as the Master Category ID');
+define('TEXT_MOVE_PRODUCTS_CATEGORIES', 'NOTE: You have selected Products from multiple categories ...<br> This will result in Products being moved from their Master Category to the NEW Category with the NEW Category being set as the Master Category ID');
 define('TEXT_MOVE_PRODUCTS_INFO', '<strong>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;When Moving Products, if you do not pick the Search From Category,<br />
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;then the Products will be moved from their current Master Category ID<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;When Moving Products, if you do not pick the Search From Category,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;then the Products will be moved from their current Master Category ID<br>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to the New Category which will then be set as the new Master Category ID:</strong>');
 define('HEADING_SELECT_PRODUCT_MOVE_FROM', 'Select Products To Move');
