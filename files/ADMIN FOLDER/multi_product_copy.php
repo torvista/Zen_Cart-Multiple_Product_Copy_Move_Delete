@@ -389,15 +389,14 @@ if (zen_not_null($action)) {
 <!doctype html>
 <html <?php echo HTML_PARAMS; ?>>
 <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=<?php echo CHARSET; ?>">
-    <title><?php echo TITLE; ?></title>>
+    <meta charset="<?php echo CHARSET; ?>">
+    <title><?php echo TITLE; ?></title>
     <link rel="stylesheet" type="text/css" href="includes/stylesheet.css">
     <link rel="stylesheet" type="text/css" media="print" href="includes/stylesheet_print.css">
     <link rel="stylesheet" type="text/css" href="includes/cssjsmenuhover.css" media="all" id="hoverJS">
     <script src="includes/menu.js"></script>
-    <script src="includes/general.js"></script>
+    <script src ="includes/general.js"></script>
     <script>
-        <!--
         function init() {
             cssjsmenu('navbar');
             if (document.getElementById) {
@@ -405,10 +404,8 @@ if (zen_not_null($action)) {
                 kill.disabled = true;
             }
         }
-
-        // -->
     </script>
-    <style type="text/css">
+    <style>
         #tableDelete td label {
             font-weight: normal;
         }
@@ -422,26 +419,24 @@ require(DIR_WS_INCLUDES . 'header.php');
 ?>
 <!-- header_eof //-->
 <!-- body //-->
-<table border="0" width="100%" cellspacing="2" cellpadding="2">
+<table>
     <tr>
         <!-- body_text //-->
-        <td width="100%" valign="top">
-            <table border="0" width="100%" cellspacing="0" cellpadding="10">
+        <td>
+            <table>
                 <tr>
-                    <td width="100%">
-                        <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                    <td>
+                        <table>
                             <tr>
-                                <td class="pageHeading"><?php echo HEADING_TITLE; ?><p><a
-                                                href="http://www.zen-cart.com/forum/showthread.php?t=180447"
-                                                target="_blank">Zen Cart Forum Support Thread</a></td>
-                                <td class="pageHeading" align="right"><?php echo zen_draw_separator('pixel_trans.gif',
-                                        HEADING_IMAGE_WIDTH, HEADING_IMAGE_HEIGHT); ?></td>
+                                <td class="pageHeading">
+                                    <?php echo HEADING_TITLE; ?>
+                                </td>
                             </tr>
                             <?php if (!empty($messages)) { ?>
                                 <tr>
                                     <td>
                                         <?php
-                                        echo '<table ' . ' width="100%">' . "\n";
+                                        echo '<table>' . "\n";
                                         foreach ($messages as $message) {
                                             echo '<tr><td class="alert">' . $message . "</td></tr>\n";
                                         }
@@ -456,7 +451,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                 <?php if ($action == 'new') {//default / initial page entry
                     echo '<tr><td class="main"><p class="pageHeading">' . HEADING_NEW . "</p>\n";
                     echo zen_draw_form('sale_entry', FILENAME_MULTI_COPY, 'action=find');
-                    echo TEXT_HOW_TO_COPY . "<br>\n";
+                    echo '<p>' . TEXT_HOW_TO_COPY . "</p>\n";
 
                     echo zen_draw_radio_field('copy_as', 'deleted',
                             ($_POST['copy_as'] == 'deleted' ? true : false)) . ' ' . TEXT_COPY_AS_DELETED . '<br>' . "<br>\n";
@@ -505,15 +500,18 @@ require(DIR_WS_INCLUDES . 'header.php');
                     //echo ENTRY_AUTO_CHECK . zen_draw_radio_field('autocheck', 'yes', 'yes') . '&nbsp;' . TEXT_YES . '&nbsp;&nbsp;&nbsp;' . zen_draw_radio_field('autocheck', 'no') . '&nbsp;' . TEXT_NO . "<br><br>\n";
 
                     echo zen_draw_separator('pixel_black.gif', '90%', '3') . '<br><br>';
-                    echo '<b>' . TEXT_ENTER_CRITERIA . "</b><br><br>\n";
-                    echo TEXT_PRODUCTS_CATEGORY . ' ' . zen_draw_pull_down_menu('category_id',
-                            zen_get_category_tree('0', '', '', array(
+
+                    echo '<p><b>' . TEXT_ENTER_CRITERIA . "</b></p>\n";
+
+                    echo "<p>\n";
+                    echo TEXT_PRODUCTS_CATEGORY . ' ' . zen_draw_pull_down_menu('category_id', zen_get_category_tree('0', '', '', array(
                                 array('id' => '', 'text' => TEXT_ANY_CATEGORY),
                                 array('id' => '0', 'text' => TEXT_TOP)
                             )));
                     echo '&nbsp;&nbsp;&nbsp;' . zen_draw_checkbox_field('inc_subcats',
-                            'yes') . ENTRY_INC_SUBCATS . ' ' . ENTRY_DELETE_TO_NOTE . "<br>\n";
-                    echo '<p><b>' . TEXT_ENTER_TERMS . "</b><br><br>\n";
+                            'yes') . ENTRY_INC_SUBCATS . ' ' . ENTRY_DELETE_TO_NOTE . "</p>\n";
+                    echo '<p><b>' . TEXT_ENTER_TERMS . "</b></p>\n";
+
                     echo zen_draw_input_field('keywords', '', 'size=50') . "<br>\n";
                     echo zen_draw_radio_field('within', 'name') . '&nbsp;' . TEXT_NAME_ONLY;
                     echo '&nbsp;' . zen_draw_radio_field('within', 'all', 'all') . '&nbsp;' . TEXT_DESCRIPTIONS . "<br>\n";
@@ -531,10 +529,11 @@ require(DIR_WS_INCLUDES . 'header.php');
                     echo ENTRY_MAX_PRICE . zen_draw_input_field('max_price') . TEXT_OPTIONAL . "<br>\n";
                     echo ENTRY_PRODUCT_QUANTITY . zen_draw_input_field('product_quantity',
                             'any') . TEXT_OPTIONAL . "<br>\n";
-                    echo "</p>\n";
-                    echo '<p>' . zen_image_submit('button_preview.gif', IMAGE_PREVIEW);
-                    echo "</form></p>\n";
-                    echo '<p>' . TEXT_TIPS . "</p>\n";
+
+                    echo '<p>' . zen_image_submit('button_preview.gif', IMAGE_PREVIEW) . '</p>';
+                    echo "</form>\n";
+
+                    echo TEXT_TIPS;
                     ?>
                     <!--</form>--><!--steve for validation-->
                     </td></tr>
@@ -542,7 +541,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                     ?>
                     <tr>
                         <td>
-                            <table border="0" width="100%" cellspacing="0" cellpadding="0">
+                            <table border="0" cellspacing="0" cellpadding="0">
                                 <tr>
                                     <td class="pageHeading">
                                         <?php
@@ -584,27 +583,28 @@ require(DIR_WS_INCLUDES . 'header.php');
                                     </tr>
                                 <?php } // !=deleted ?>
                                 <tr>
-                                    <td class="main"><p style="font-weight: bold;">
+                                    <td class="main">
+
                                             <?php
                                             //echo '<pre>'; echo var_dump($_POST); echo '</pre>';
                                             switch ($copy_as) {
                                                 case ('delete_one'):
-                                                    echo TEXT_DETAILS_DELETE_ONE . "</p>\n";
+                                                    echo '<p>' . TEXT_DETAILS_DELETE_ONE . "</p>\n";
                                                     echo '<blockquote>' . ENTRY_DELETE_ONE . "<br>\n";
                                                     echo "</blockquote>\n<b>" . TEXT_SELECT_PRODUCTS_DELETE_ONE . "</b>\n";
                                                     break;
                                                 case ('delete_specials'):
-                                                    echo TEXT_DETAILS_DELETE_SPECIALS . "</p>\n";
+                                                    echo '<p>' . TEXT_DETAILS_DELETE_SPECIALS . "</p>\n";
                                                     echo '<blockquote>' . ENTRY_DELETE_SPECIALS . "<br>\n";
                                                     echo "</blockquote>\n<b>" . TEXT_SELECT_PRODUCTS_DELETE_SPECIALS . "</b>\n";
                                                     break;
                                                 case ('deleted'):
-                                                    echo TEXT_DETAILS_DELETED . "</p>\n";
+                                                    echo '<p>' . TEXT_DETAILS_DELETED . "</p>\n";
                                                     echo '<blockquote>' . ENTRY_DELETED . "<br>\n";
                                                     echo "</blockquote>\n<b>" . TEXT_SELECT_PRODUCTS_DELETED . "</b>\n";
                                                     break;
                                                 case ('link'):
-                                                    echo TEXT_DETAILS_LINK . "</p>\n";
+                                                    echo '<p>' . TEXT_DETAILS_LINK . "</p>\n";
                                                     if (zen_childs_in_category_count($copy_to) > 0) {
                                                         echo '<span class="alert">' . TEXT_WARNING_CATEGORY_SUB . '</span>' . "<br>\n";
                                                     }
@@ -623,7 +623,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                                                     }
                                                     if ($copy_as != 'move_from') {
 // echo 'I SEE: ' . $copy_as . '<br>' . 'Copy from: ' . $category_id . '<br>' . 'Copy To: ' . $copy_to . '<br><br><br>';
-                                                        echo TEXT_DETAILS . "</p>\n";
+                                                        echo '<p>' . TEXT_DETAILS . "</p>\n";
                                                         if (zen_childs_in_category_count($copy_to) > 0) {
                                                             echo '<span class="alert">' . TEXT_WARNING_CATEGORY_SUB . '</span>' . "<br>\n";
                                                         }
@@ -657,20 +657,15 @@ require(DIR_WS_INCLUDES . 'header.php');
                                             $copy_media = $_POST['copy_media'];
                                             echo zen_draw_hidden_field('copy_media');
                                             ?>
-                                        <table border="1" cellspacing="0" cellpadding="2" id="tableDelete">
+                                        <table border="1" id="tableDelete">
                                             <tr class="dataTableHeadingRow">
-                                                <td class="dataTableHeadingContent" align="center"
-                                                    width="20"><?php echo TABLE_HEADING_SELECT; ?></td>
+                                                <td class="dataTableHeadingContent text-center" width="20"><?php echo TABLE_HEADING_SELECT; ?></td>
                                                 <td class="dataTableHeadingContent"><?php echo TABLE_HEADING_MODEL; ?></td>
                                                 <td class="dataTableHeadingContent"><?php echo TABLE_HEADING_NAME; ?></td>
-                                                <td class="dataTableHeadingContent"
-                                                    align="center"><?php echo TABLE_HEADING_PRODUCTS_ID; ?></td>
-                                                <td class="dataTableHeadingContent" align="center"
-                                                    width="20"><?php echo TABLE_HEADING_STATUS; ?></td>
-                                                <td class="dataTableHeadingContent" align="center"
-                                                    width="20"><?php echo TABLE_HEADING_LINKED; ?></td>
-                                                <td class="dataTableHeadingContent"
-                                                    align="right"><?php echo TABLE_HEADING_PRICE; ?></td>
+                                                <td class="dataTableHeadingContent text-center"><?php echo TABLE_HEADING_PRODUCTS_ID; ?></td>
+                                                <td class="dataTableHeadingContent text-center" width="20"><?php echo TABLE_HEADING_STATUS; ?></td>
+                                                <td class="dataTableHeadingContent text-center" width="20"><?php echo TABLE_HEADING_LINKED; ?></td>
+                                                <td class="dataTableHeadingContent text-right"><?php echo TABLE_HEADING_PRICE; ?></td>
                                                 <td class="dataTableHeadingContent"><?php echo TABLE_HEADING_MFG; ?></td>
                                             </tr>
                                             <?php
@@ -694,15 +689,9 @@ require(DIR_WS_INCLUDES . 'header.php');
                                                 if ($show_product == true) {
                                                     if ($show_images) {//bof steve added
                                                         if ($product_multi->fields['products_image'] == '') {
-                                                            $product_image = zen_image(DIR_WS_CATALOG_IMAGES . PRODUCTS_IMAGE_NO_IMAGE,
-                                                                $product_multi->fields['products_name'],
-                                                                SMALL_IMAGE_WIDTH, SMALL_IMAGE_HEIGHT,
-                                                                'align="right" hspace="5" vspace="5"');
+                                                            $product_image = zen_image(DIR_WS_CATALOG_IMAGES . PRODUCTS_IMAGE_NO_IMAGE, $product_multi->fields['products_name'], SMALL_IMAGE_WIDTH, SMALL_IMAGE_HEIGHT);
                                                         } else {
-                                                            $product_image = zen_image(DIR_WS_CATALOG_IMAGES . $product_multi->fields['products_image'],
-                                                                $product_multi->fields['products_name'],
-                                                                SMALL_IMAGE_WIDTH, SMALL_IMAGE_HEIGHT,
-                                                                'align="right" hspace="5" vspace="5"');
+                                                            $product_image = zen_image(DIR_WS_CATALOG_IMAGES . $product_multi->fields['products_image'],$product_multi->fields['products_name'], SMALL_IMAGE_WIDTH, SMALL_IMAGE_HEIGHT);
                                                         }
                                                     } else {
                                                         $product_image = '';
@@ -711,7 +700,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                                                     ?>
                                                     <tr class="dataTableRow"><?php //steve todo removed mouseover as shows cursor on most columns... to investigte. Was
                                                         //  onmouseover="rowOverEffect(this)" onmouseout="rowOutEffect(this)" ?>
-                                                        <td class="dataTableContent" align="center">
+                                                        <td class="dataTableContent text-center">
                                                             <?php
                                                             if ($copy_as != 'delete_one' || ($copy_as == 'delete_one' && zen_get_product_is_linked($product_multi->fields['products_id']) == 'true')) {
                                                                 echo zen_draw_checkbox_field('product[' . $cnt . ']',
@@ -734,7 +723,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                                                         <td class="dataTableContent">
                                                             <?php echo $product_multi->fields['products_id']; //steve added/was missing!!??? ?>
                                                         </td>
-                                                        <td class="dataTableContent" align="center">
+                                                        <td class="dataTableContent text-center">
                                                             <?php
                                                             //steve made status icons a link to product edit
                                                             echo '<a href="' . zen_href_link(FILENAME_PRODUCT,
@@ -742,7 +731,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                                                                     IMAGE_ICON_STATUS_ON . ' -> Edit Product') : zen_image(DIR_WS_IMAGES . 'icon_red_on.gif', IMAGE_ICON_STATUS_OFF . ' -> Edit Product')) . '</a>';//steve todo languages constants
                                                             ?>
                                                         </td>
-                                                        <td class="dataTableContent" align="center">
+                                                        <td class="dataTableContent text-center">
                                                             <?php
                                                             if (zen_get_product_is_linked($product_multi->fields['products_id']) == 'true') {
                                                                 echo '&nbsp;&nbsp;' . zen_image(DIR_WS_IMAGES . 'icon_yellow_on.gif',
@@ -752,7 +741,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                                                             }
                                                             ?>
                                                         </td>
-                                                        <td class="dataTableContent" align="right"><?php echo zen_get_products_display_price($product_multi->fields['products_id']); ?>
+                                                        <td class="dataTableContent text-right"><?php echo zen_get_products_display_price($product_multi->fields['products_id']); ?>
                                                         </td>
                                                         <td class="dataTableContent"><label
                                                                     for="product[<?php echo $cnt - 1; ?>]"><?php echo $product_multi->fields['manufacturers_name']; ?></label>
@@ -817,18 +806,21 @@ require(DIR_WS_INCLUDES . 'header.php');
                         <td class="pageHeading"><?php echo HEADING_PRODUCT_COPIED; ?></td>
                     </tr>
                     <tr>
-                        <td class="main"><p style="font-weight: bold;">
-                                <?php echo TEXT_DETAILS . "</p>\n";
+                        <td class="main">
+                            <p>
+                                <?php echo TEXT_DETAILS; ?>
+                             </p>
+                            <?php
                                 echo '<blockquote>' . ENTRY_COPY_TO . $copy_to . ' - ' . $copy_to_name . "<br>\n";
                                 echo "</blockquote>\n<b>" . TEXT_CHANGES_MADE . "</b>\n";
                                 ?>
-                            <table border="0" width="100%" cellspacing="0" cellpadding="2">
+                            <table>
                                 <tr class="dataTableHeadingRow">
                                     <td class="dataTableHeadingContent"><?php echo TABLE_HEADING_PRODUCTS_ID; ?></td>
                                     <td class="dataTableHeadingContent"><?php echo TABLE_HEADING_MFG; ?></td>
                                     <td class="dataTableHeadingContent"><?php echo TABLE_HEADING_MODEL; ?></td>
                                     <td class="dataTableHeadingContent"><?php echo TABLE_HEADING_NAME; ?></td>
-                                    <td class="dataTableHeadingContent" align="right"><?php echo TABLE_HEADING_PRICE; ?>
+                                    <td class="dataTableHeadingContent text-right"><?php echo TABLE_HEADING_PRICE; ?>
                                         &nbsp;&nbsp;
                                     </td>
                                 </tr>
@@ -839,8 +831,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                                         <td class="dataTableContent"><?php echo $product_multi['manufacturer']; ?></td>
                                         <td class="dataTableContent"><?php echo $product_multi['model']; ?></td>
                                         <td class="dataTableContent"><?php echo $product_multi['name']; ?></td>
-                                        <td class="dataTableContent"
-                                            align="right"><?php echo $product_multi['price']; ?>&nbsp;&nbsp;
+                                        <td class="dataTableContent text-right"><?php echo $product_multi['price']; ?>&nbsp;&nbsp;
                                         </td>
                                     </tr>
                                 <?php } ?>
@@ -851,7 +842,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                 <tr>
                     <td>
                         <?php
-                        echo count($items_set) . TEXT_PRODUCTS_COPIED . "<p>\n";
+                        echo '<p>' . count($items_set) . TEXT_PRODUCTS_COPIED . "</p>\n";
                         echo zen_draw_form('product_entry', FILENAME_CATEGORY_PRODUCT_LISTING, 'cPath=' . $copy_to);
                         echo zen_draw_input_field('cat', sprintf(BUTTON_GO_TO_CATEGORY, $copy_to, $copy_to_name), 'alt="' . sprintf(BUTTON_GO_TO_CATEGORY, $copy_to, $copy_to_name) . '"', false, 'submit');
                         echo '</form>&nbsp;&nbsp;';
