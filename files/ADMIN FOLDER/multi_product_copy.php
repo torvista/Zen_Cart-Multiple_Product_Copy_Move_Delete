@@ -9,6 +9,10 @@
  * $Id: multi_product_copy.php ver 1.393 by Linda McGrath 2013-01-17
  * $Id: multi_product_copy.php ver 1.394 by torvista 2019
  */
+/**PROGRESS
+
+ **/
+
 require('includes/application_top.php');
 
 $show_images = false;//steve added todo
@@ -419,6 +423,9 @@ require(DIR_WS_INCLUDES . 'header.php');
 ?>
 <!-- header_eof //-->
 <!-- body //-->
+<div class="container-fluid">
+    <!-- body_text //-->
+    <h1><?php echo HEADING_TITLE; ?></h1>
 <table>
     <tr>
         <!-- body_text //-->
@@ -426,26 +433,14 @@ require(DIR_WS_INCLUDES . 'header.php');
             <table>
                 <tr>
                     <td>
-                        <table>
-                            <tr>
-                                <td class="pageHeading">
-                                    <?php echo HEADING_TITLE; ?>
-                                </td>
-                            </tr>
-                            <?php if (!empty($messages)) { ?>
-                                <tr>
-                                    <td>
-                                        <?php
-                                        echo '<table>' . "\n";
-                                        foreach ($messages as $message) {
-                                            echo '<tr><td class="alert">' . $message . "</td></tr>\n";
-                                        }
-                                        echo "</table>\n";
-                                        ?>
-                                    </td>
-                                </tr>
-                            <?php } ?>
-                        </table>
+                        <?php
+                        if (!empty($messages)) { ?>
+                            <div class="errorText">
+                                <?php foreach ($messages as $message) { ?>
+                                    <div><?php echo $message; ?></div>
+                                <?php } ?>
+                            </div>
+                        <?php } ?>
                     </td>
                 </tr>
                 <?php if ($action == 'new') {//default / initial page entry
@@ -854,15 +849,18 @@ require(DIR_WS_INCLUDES . 'header.php');
                         ?>
             </table>
         </td>
-        <!-- body_text_eof //-->
     </tr>
 </table>
+   <!-- body_text_eof //-->
+
+</div>
 <!-- body_eof //-->
 
-<!-- footer //-->
-<?php require(DIR_WS_INCLUDES . 'footer.php'); ?>
-<!-- footer_eof //-->
-<br/>
+    <!-- footer //-->
+    <div class="footer-area">
+        <?php require(DIR_WS_INCLUDES . 'footer.php'); ?>
+    </div>
+    <!-- footer_eof //-->
 </body>
 </html>
 <?php require(DIR_WS_INCLUDES . 'application_bottom.php'); ?>
