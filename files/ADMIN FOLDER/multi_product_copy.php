@@ -123,12 +123,12 @@ if (($action == 'find') || ($action == 'confirm')) { //validate form
     if ($action == 'confirm') { // perform additional validations
         $cnt = (int)$_POST['product_count'];
         $found = explode(',', $_POST['items_found']);
-        if ($cnt != sizeof($found)) {
+        if ($cnt != count($found)) {
             $messages[] = ERROR_UNEXPLAIN;
             $action = 'find';
         }
         $set_items = $_POST['product'];//checkboxes
-        if (sizeof($set_items) == 0) {
+        if (count($set_items) == 0) {
             $messages[] = ERROR_NOT_SELECTED;
             $action = 'find';
         } elseif (!is_array($set_items)) {
@@ -331,7 +331,7 @@ if (zen_not_null($action)) {
             break;
         case 'find':
             $raw_query = "SELECT * FROM " . TABLE_PRODUCTS . " p LEFT JOIN " . TABLE_MANUFACTURERS . " m ON p.manufacturers_id = m.manufacturers_id, " . TABLE_PRODUCTS_DESCRIPTION . " pd, " . TABLE_PRODUCTS_TO_CATEGORIES . " ptoc WHERE p.products_id = pd.products_id AND p.products_id = ptoc.products_id AND pd.language_id =  " . (int)$_SESSION['languages_id'];
-            if (sizeof($products_in_copyto) > 0) {
+            if (count($products_in_copyto) > 0) {
                 $raw_query .= ' and (not (p.products_id in (' . implode(',', $products_in_copyto) . ')))';
             }
             if (is_numeric($manufacturer_id)) {
@@ -355,9 +355,9 @@ if (zen_not_null($action)) {
             }
 
             $where_str = '';
-            if (isset($search_keywords) && (sizeof($search_keywords) > 0)) {
+            if (isset($search_keywords) && (count($search_keywords) > 0)) {
                 $where_str .= " and (";
-                for ($i = 0, $n = sizeof($search_keywords); $i < $n; $i++) {
+                for ($i = 0, $n = count($search_keywords); $i < $n; $i++) {
                     switch ($search_keywords[$i]) {
                         case '(':
                         case ')':
@@ -382,7 +382,7 @@ if (zen_not_null($action)) {
             $query = $db->Execute($raw_query . $where_str . ' order by p.products_model');//steve change this for results sort order
 
             if ($query->EOF) {
-                $action = "new";
+                $action = 'new';
                 $error = true;
                 $messages[] = TEXT_NOT_FOUND;
             }
@@ -426,10 +426,6 @@ require(DIR_WS_INCLUDES . 'header.php');
 <div class="container-fluid">
     <!-- body_text //-->
     <h1><?php echo HEADING_TITLE; ?></h1>
-<table>
-    <tr>
-        <!-- body_text //-->
-        <td>
             <table>
                 <tr>
                     <td>
@@ -848,14 +844,9 @@ require(DIR_WS_INCLUDES . 'header.php');
                         }
                         ?>
             </table>
-        </td>
-    </tr>
-</table>
-   <!-- body_text_eof //-->
-
+    <!-- body_text_eof //-->
 </div>
 <!-- body_eof //-->
-
     <!-- footer //-->
     <div class="footer-area">
         <?php require(DIR_WS_INCLUDES . 'footer.php'); ?>
