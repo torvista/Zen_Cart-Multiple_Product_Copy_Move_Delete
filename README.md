@@ -4,7 +4,7 @@ Based on
 https://www.zen-cart.com/showthread.php?180447-Multiple-Products-(Copy-Move-Delete)
 
 2019 Current Status:
-This fileset is CURRENTLY being tested on php 7.3.11 and Zen Cart 1.5.6. It is NOT ready yet!
+This fileset is CURRENTLY being tested on php 7.3.11 and Zen Cart 1.5.7. It is NOT ready yet!
 
 USE AT OWN RISK - TEST THOROUGHLY ON YOUR DEVELOPMENT SERVER
 
@@ -41,7 +41,7 @@ All are new files/no core files should be overwritten.
 
 The menu entry should be added to the Admin->Catalog section.
 
-3)Required File Modifications: 2019 THIS SECTION IS UNDER REVIEW
+3) Required File Modifications: 2019 THIS SECTION IS UNDER REVIEW
 
 Three modifications are required to core files.
 
@@ -103,16 +103,15 @@ move_product_confirm.php
 
 you will need to add the similar IF statement around the redirect on the last line of the file. 
 
-
-Uninstall
-1) Copy, paste and run the uninstall SQL.
-2) Use the backup you kept of this fileset, to compare and delete the files copied as part of the installation process.
+4) Uninstall
+a) Copy, paste and run the uninstall SQL in the Admin->SQLpatch tool or phpMyAdmin.
+b) Use the backup you kept of this fileset to compare and delete the files copied as part of the installation process.
 
 
 ---------------------
 Changelog
 
-2019 11 torvista: under revision
+2019 11 torvista: under review
 
 2019 10 torvista: put on Github.
 
