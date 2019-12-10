@@ -4,7 +4,6 @@
  * @var zcObserverLogEventListener $zco_notifier
  */
 /** TODO
- * $min_msrp, $max_msrp not implemented?
  * checkbox select found as sticky
  * review move wrt master category and linked categories
  */

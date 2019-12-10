@@ -11,4 +11,4 @@
  * Catalog Box menu
 */
 
-define('BOX_CATALOG_MULTI_COPY', 'Multi-Item Copy/Delete');
+define('BOX_CATALOG_MULTI_COPY', 'Multi-Product Copy/Delete');
