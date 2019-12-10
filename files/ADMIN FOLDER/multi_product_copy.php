@@ -221,7 +221,7 @@ if (zen_not_null($action)) {
                             $db->Execute("DELETE FROM " . TABLE_PRODUCTS_TO_CATEGORIES . " WHERE products_id = " . (int)$id . " AND categories_id = " . (int)$_POST['category_id']);
                             // fix master_categories_id
                             $new_master_categories_id = '';
-                            if ((int)$product_multi->fields['master_categories_id'] === (int) $_POST['category_id']) {
+                            if ((int)$product_multi->fields['master_categories_id'] === (int)$_POST['category_id']) {
                                 // get list of indexes, so they can be excluded temporarily
                                 $results = $db->Execute("SHOW index from " . TABLE_PRODUCTS_TO_CATEGORIES);
                                 $keys = ['PRIMARY'];
@@ -466,83 +466,116 @@ require(DIR_WS_INCLUDES . 'header.php');
                 <?php } ?>
             </td>
         </tr>
-        <?php if ($action === 'new') { // if no post action (such as initial page load), $action is set to new ?>
+        <?php if ($action === 'new') { // if no post action set (such as initial page load), $action is pre-set to "new" ?>
             <tr>
                 <td>
                     <div>
                         <?php
-                        echo zen_draw_form('sale_entry', FILENAME_MULTI_COPY, 'action=find');
-
-                        echo '<p>' . TEXT_HOW_TO_COPY . "</p>\n";
-                        echo zen_draw_radio_field('copy_as', 'deleted', ($_POST['copy_as'] === 'deleted')) . ' ' . TEXT_COPY_AS_DELETED . '<br>' . "<br>\n";
-                        echo zen_draw_radio_field('copy_as', 'delete_one', (($_POST['copy_as'] === 'delete_one' || $_POST['copy_as'] === ''))) . ' ' . TEXT_COPY_AS_DELETE_ONE . '<br>' . "<br>\n";
-                        echo zen_draw_radio_field('copy_as', 'delete_specials', ($_POST['copy_as'] === 'delete_specials')) . ' ' . TEXT_COPY_AS_DELETE_SPECIALS . "<br>\n";
-
-                        echo zen_draw_separator('pixel_black.gif', '50%', '1') . "<br>\n";
-
-                        echo '<p>' . TEXT_MOVE_PRODUCTS_INFO . "</p>\n";
-                        echo zen_draw_radio_field('copy_as', 'move_from', ($_POST['copy_as'] === 'move_from')) . ' ' . TEXT_MOVE_FROM_LINK . "<br>\n";
-
-                        echo zen_draw_separator('pixel_black.gif', '50%', '1') . "<br>\n";
-
-                        echo zen_draw_radio_field('copy_as', 'link', ($_POST['copy_as'] === 'link')) . ' ' . TEXT_COPY_AS_LINK . "<br>\n";
-                        echo zen_draw_radio_field('copy_as', 'duplicate', ($_POST['copy_as'] === 'duplicate')) . ' ' . TEXT_COPY_AS_DUPLICATE . "<br>\n";
-                        echo '<p>' . TEXT_COPYING_DUPLICATES . "</p>\n";
-                        echo TEXT_COPY_ATTRIBUTES . ' ' . zen_draw_radio_field('copy_attributes', 'copy_attributes_yes', true) . ' ' .
-                            TEXT_COPY_ATTRIBUTES_YES . ' ' . zen_draw_radio_field('copy_attributes', 'copy_attributes_no') . ' ' . TEXT_COPY_ATTRIBUTES_NO . "<br>\n";
-                        echo TEXT_COPY_SPECIALS . ' ' . zen_draw_radio_field('copy_specials', 'copy_specials_yes', true) . ' ' .
-                            TEXT_YES . ' ' . zen_draw_radio_field('copy_specials', 'copy_specials_no') . ' ' . TEXT_NO . "<br>\n";
-                        echo TEXT_COPY_FEATURED . ' ' . zen_draw_radio_field('copy_featured', 'copy_featured_yes', true) . ' ' .
-                            TEXT_YES . ' ' . zen_draw_radio_field('copy_featured', 'copy_featured_no') . ' ' . TEXT_NO . "<br>\n";
-                        echo TEXT_COPY_DISCOUNTS . ' ' . zen_draw_radio_field('copy_discounts', 'copy_discounts_yes', true) . ' ' .
-                            TEXT_YES . ' ' . zen_draw_radio_field('copy_discounts', 'copy_discounts_no') . ' ' . TEXT_NO . "<br>\n";
-                        echo TEXT_COPY_MEDIA_MANAGER . ' ' . zen_draw_radio_field('copy_media', 'on', true) . ' ' .
-                            TEXT_YES . ' ' . zen_draw_radio_field('copy_media', 'off') . ' ' . TEXT_NO . "<br><br>\n";
-
-                        echo ENTRY_COPY_TO . ' ' . zen_draw_pull_down_menu('copy_to', zen_get_category_tree('0', '', '',
-                                [
-                                    ['id' => '', 'text' => PLEASE_SELECT],
-                                    ['id' => '0', 'text' => TEXT_TOP]
-                                ])) . ENTRY_COPY_TO_NOTE . '<br>' . "<br>\n";
-
-                        echo zen_draw_separator('pixel_black.gif', '50%', '2') . "<br>\n";
-
-                        echo '<p><b>' . TEXT_ENTER_CRITERIA . "</b></p>\n";
-
-                        echo "<p>\n";
-                        echo TEXT_PRODUCTS_CATEGORY . ' ' . zen_draw_pull_down_menu('category_id', zen_get_category_tree('0', '', '', array(
-                                array('id' => '', 'text' => TEXT_ANY_CATEGORY),
-                                array('id' => '0', 'text' => TEXT_TOP)
-                            )));
-                        echo '&nbsp;&nbsp;&nbsp;' . zen_draw_checkbox_field('inc_subcats',
-                                'yes') . ENTRY_INC_SUBCATS . ' ' . ENTRY_DELETE_TO_NOTE . "</p>\n";
-                        echo '<p><b>' . TEXT_ENTER_TERMS . "</b></p>\n";
-
-                        echo zen_draw_input_field('keywords', '', 'size=50') . "<br>\n";
-                        echo zen_draw_radio_field('within', 'name') . '&nbsp;' . TEXT_NAME_ONLY;
-                        echo '&nbsp;' . zen_draw_radio_field('within', 'all', 'all') . '&nbsp;' . TEXT_DESCRIPTIONS . "<br>\n";
-                        $manufacturers_array = [['id' => '', 'text' => TEXT_ANY_MANUFACTURER]];
-                        $manufacturers_query = $db->Execute("SELECT manufacturers_id, manufacturers_name FROM " . TABLE_MANUFACTURERS . " ORDER BY manufacturers_name");
-                        while (!$manufacturers_query->EOF) {
-                            $manufacturers_array[] = [
-                                'id' => $manufacturers_query->fields['manufacturers_id'],
-                                'text' => $manufacturers_query->fields['manufacturers_name']
-                            ];
-                            $manufacturers_query->MoveNext();
-                        }
-                        echo TEXT_PRODUCTS_MANUFACTURER . zen_draw_pull_down_menu('manufacturer_id', $manufacturers_array) . "<br>\n";
-                        echo ENTRY_MIN_PRICE . zen_draw_input_field('min_price') . TEXT_OPTIONAL . "<br>\n";
-                        echo ENTRY_MAX_PRICE . zen_draw_input_field('max_price') . TEXT_OPTIONAL . "<br>\n";
-                        echo ENTRY_PRODUCT_QUANTITY . zen_draw_input_field('product_quantity',
-                                'any') . TEXT_OPTIONAL . "<br><br>\n"; ?>
+                        echo zen_draw_form('sale_entry', FILENAME_MULTI_COPY, 'action=find'); ?>
                         <div>
-                            <?php echo ENTRY_AUTO_CHECK .
-                                zen_draw_radio_field('autocheck', 'yes', 'true') . '&nbsp;' . TEXT_YES . '&nbsp;&nbsp;&nbsp;' .
-                                zen_draw_radio_field('autocheck', 'no') . '&nbsp;' . TEXT_NO . '&nbsp;&nbsp;';
-                            echo zen_image_submit('button_preview.gif', IMAGE_PREVIEW); ?>
+                            <p><?php echo TEXT_HOW_TO_COPY; ?></p>
+
+                            <fieldset>
+                                <legend><?php echo IMAGE_DELETE; ?></legend>
+                                <label><?php echo zen_draw_radio_field('copy_as', 'deleted', ($_POST['copy_as'] === 'deleted')) . ' ' . TEXT_COPY_AS_DELETED; ?></label>
+                                <label><?php echo zen_draw_radio_field('copy_as', 'delete_one',
+                                            (($_POST['copy_as'] === 'delete_one' || $_POST['copy_as'] === ''))) . ' ' . TEXT_COPY_AS_DELETE_ONE; ?></label>
+                                <label><?php echo zen_draw_radio_field('copy_as', 'delete_specials', ($_POST['copy_as'] === 'delete_specials')) . ' ' . TEXT_COPY_AS_DELETE_SPECIALS; ?></label>
+                            </fieldset>
+
+                            <?php echo zen_draw_separator('pixel_black.gif', '50%', '1'); ?><br>
+
+                            <fieldset>
+                                <legend><?php echo IMAGE_MOVE; ?></legend>
+                                <p><?php echo TEXT_MOVE_PRODUCTS_INFO; ?></p>
+                                <label><?php echo zen_draw_radio_field('copy_as', 'move_from', ($_POST['copy_as'] === 'move_from')) . ' ' . TEXT_MOVE_FROM_LINK; ?></label>
+                            </fieldset>
+
+                            <?php echo zen_draw_separator('pixel_black.gif', '50%', '1'); ?><br>
+
+                            <fieldset>
+                                <legend><?php echo TEXT_COPY_AS_LINK; ?></legend>
+                                <label><?php echo zen_draw_radio_field('copy_as', 'link', ($_POST['copy_as'] === 'link')) . ' ' . TEXT_COPY_AS_LINK; ?></label>
+                            </fieldset>
+
+                            <?php echo zen_draw_separator('pixel_black.gif', '50%', '1'); ?><br>
+
+                            <fieldset>
+                                <legend><?php echo TEXT_COPY_AS_DUPLICATE; ?></legend>
+                                <label><?php echo zen_draw_radio_field('copy_as', 'duplicate', ($_POST['copy_as'] === 'duplicate')) . ' ' . TEXT_COPY_AS_DUPLICATE; ?></label>
+
+                                <p><?php echo TEXT_COPYING_DUPLICATES; ?></p>
+
+                                <p><?php echo TEXT_COPY_ATTRIBUTES; ?>
+                                    <label><?php echo zen_draw_radio_field('copy_attributes', 'copy_attributes_yes', true) . ' ' . TEXT_YES; //todo sticky ?></label>
+                                    <label><?php echo zen_draw_radio_field('copy_attributes', 'copy_attributes_no') . ' ' . TEXT_NO; ?></label></p>
+
+                                <p><?php echo TEXT_COPY_METATAGS; ?>
+                                    <label><?php echo zen_draw_radio_field('copy_metatags', 'copy_metatags_yes', true) . ' ' . TEXT_YES; //todo ADD  ?></label>
+                                    <label><?php echo zen_draw_radio_field('copy_metatags', 'copy_metatags_no') . ' ' . TEXT_NO; ?></label></p>
+
+                                <p><?php echo TEXT_COPY_SPECIALS; ?>
+                                    <label><?php echo zen_draw_radio_field('copy_specials', 'copy_specials_yes', true) . ' ' . TEXT_YES; ?></label>
+                                    <label><?php echo zen_draw_radio_field('copy_specials', 'copy_specials_no') . ' ' . TEXT_NO; ?></label></p>
+
+                                <p><?php echo TEXT_COPY_FEATURED; ?>
+                                    <label><?php echo zen_draw_radio_field('copy_featured', 'copy_featured_yes', true) . ' ' . TEXT_YES; ?></label>
+                                    <label><?php echo zen_draw_radio_field('copy_featured', 'copy_featured_no') . ' ' . TEXT_NO; ?></label></p>
+
+                                <p><?php echo TEXT_COPY_DISCOUNTS; ?>
+                                    <label><?php echo zen_draw_radio_field('copy_discounts', 'copy_discounts_yes', true) . ' ' . TEXT_YES; ?></label>
+                                    <label><?php echo zen_draw_radio_field('copy_discounts', 'copy_discounts_no') . ' ' . TEXT_NO; ?></label></p>
+
+                                <p><?php echo TEXT_COPY_MEDIA_MANAGER; ?>
+                                    <label><?php echo zen_draw_radio_field('copy_media', 'on', true) . ' ' . TEXT_YES; ?></label>
+                                    <label><?php echo zen_draw_radio_field('copy_media', 'off') . ' ' . TEXT_NO; ?></label></p>
+
+                                <?php
+                                echo ENTRY_COPY_TO . ' ' . zen_draw_pull_down_menu('copy_to', zen_get_category_tree('0', '', '',
+                                        [
+                                            ['id' => '', 'text' => PLEASE_SELECT],
+                                            ['id' => '0', 'text' => TEXT_TOP]
+                                        ])) . ENTRY_COPY_TO_NOTE; ?>
+                            </fieldset>
+
+                            <?php echo zen_draw_separator('pixel_black.gif', '50%', '2') . "<br>\n";
+
+                            echo '<p><b>' . TEXT_ENTER_CRITERIA . "</b></p>\n";
+
+                            echo "<p>\n";
+                            echo TEXT_PRODUCTS_CATEGORY . ' ' . zen_draw_pull_down_menu('category_id', zen_get_category_tree('0', '', '', array(
+                                    array('id' => '', 'text' => TEXT_ANY_CATEGORY),
+                                    array('id' => '0', 'text' => TEXT_TOP)
+                                )));
+                            echo '&nbsp;&nbsp;&nbsp;' . zen_draw_checkbox_field('inc_subcats',
+                                    'yes') . ENTRY_INC_SUBCATS . ' ' . ENTRY_DELETE_TO_NOTE . "</p>\n";
+                            echo '<p><b>' . TEXT_ENTER_TERMS . "</b></p>\n";
+
+                            echo zen_draw_input_field('keywords', '', 'size=50') . "<br>\n";
+                            echo zen_draw_radio_field('within', 'name') . '&nbsp;' . TEXT_NAME_ONLY;
+                            echo '&nbsp;' . zen_draw_radio_field('within', 'all', 'all') . '&nbsp;' . TEXT_DESCRIPTIONS . "<br>\n";
+                            $manufacturers_array = [['id' => '', 'text' => TEXT_ANY_MANUFACTURER]];
+                            $manufacturers_query = $db->Execute("SELECT manufacturers_id, manufacturers_name FROM " . TABLE_MANUFACTURERS . " ORDER BY manufacturers_name");
+                            while (!$manufacturers_query->EOF) {
+                                $manufacturers_array[] = [
+                                    'id' => $manufacturers_query->fields['manufacturers_id'],
+                                    'text' => $manufacturers_query->fields['manufacturers_name']
+                                ];
+                                $manufacturers_query->MoveNext();
+                            }
+                            echo TEXT_PRODUCTS_MANUFACTURER . zen_draw_pull_down_menu('manufacturer_id', $manufacturers_array) . "<br>\n";
+                            echo ENTRY_MIN_PRICE . zen_draw_input_field('min_price') . TEXT_OPTIONAL . "<br>\n";
+                            echo ENTRY_MAX_PRICE . zen_draw_input_field('max_price') . TEXT_OPTIONAL . "<br>\n";
+                            echo ENTRY_PRODUCT_QUANTITY . zen_draw_input_field('product_quantity',
+                                    'any') . TEXT_OPTIONAL . "<br><br>\n"; ?>
+                            <div>
+                                <?php echo ENTRY_AUTO_CHECK .
+                                    zen_draw_radio_field('autocheck', 'yes', 'true') . '&nbsp;' . TEXT_YES . '&nbsp;&nbsp;&nbsp;' .
+                                    zen_draw_radio_field('autocheck', 'no') . '&nbsp;' . TEXT_NO . '&nbsp;&nbsp;';
+                                echo zen_image_submit('button_preview.gif', IMAGE_PREVIEW); ?>
+                            </div>
                         </div>
-                        <?php
-                        echo "</form>\n";
+                        <?php echo "</form>";
                         echo zen_draw_separator('pixel_black.gif', '100%', '1') . "<br>\n";
                         ?>
                         <div><?php echo TEXT_TIPS; ?></div>
@@ -700,9 +733,11 @@ require(DIR_WS_INCLUDES . 'header.php');
                                         if ($show_product === true) {
                                             if ($show_images) {//bof steve added
                                                 if ($product_multi->fields['products_image'] === '') {//todo undefined
-                                                    $product_image = zen_image(DIR_WS_CATALOG_IMAGES . PRODUCTS_IMAGE_NO_IMAGE, $product_multi->fields['products_name'], SMALL_IMAGE_WIDTH, SMALL_IMAGE_HEIGHT);
+                                                    $product_image = zen_image(DIR_WS_CATALOG_IMAGES . PRODUCTS_IMAGE_NO_IMAGE, $product_multi->fields['products_name'], SMALL_IMAGE_WIDTH,
+                                                        SMALL_IMAGE_HEIGHT);
                                                 } else {
-                                                    $product_image = zen_image(DIR_WS_CATALOG_IMAGES . $product_multi->fields['products_image'], $product_multi->fields['products_name'], SMALL_IMAGE_WIDTH, SMALL_IMAGE_HEIGHT);
+                                                    $product_image = zen_image(DIR_WS_CATALOG_IMAGES . $product_multi->fields['products_image'], $product_multi->fields['products_name'],
+                                                        SMALL_IMAGE_WIDTH, SMALL_IMAGE_HEIGHT);
                                                 }
                                             } else {
                                                 $product_image = '';
@@ -739,7 +774,8 @@ require(DIR_WS_INCLUDES . 'header.php');
                                                     //steve made status icons a link to product edit
                                                     echo '<a href="' . zen_href_link(FILENAME_PRODUCT,
                                                             'cPath=' . zen_get_product_path($product_multi->fields['products_id']) . '&amp;product_type=1&amp;pID=' . $product_multi->fields['products_id'] . '&amp;action=new_product') . '" target="_blank">' . ($product_multi->fields['products_status'] === '1' ? zen_image(DIR_WS_IMAGES . 'icon_green_on.gif',
-                                                            IMAGE_ICON_STATUS_ON . ' -> Edit Product') : zen_image(DIR_WS_IMAGES . 'icon_red_on.gif', IMAGE_ICON_STATUS_OFF . ' -> Edit Product')) . '</a>';//steve todo languages constants
+                                                            IMAGE_ICON_STATUS_ON . ' -> Edit Product') : zen_image(DIR_WS_IMAGES . 'icon_red_on.gif',
+                                                            IMAGE_ICON_STATUS_OFF . ' -> Edit Product')) . '</a>';//steve todo languages constants
                                                     ?>
                                                 </td>
                                                 <td class="dataTableContent text-center">

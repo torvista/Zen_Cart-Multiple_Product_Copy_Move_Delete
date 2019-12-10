@@ -9,7 +9,7 @@
  * $Id: multi_product_copy.php ver 1.394 by torvista 2019
 */
 
-define('HEADING_TITLE', 'Multiple Product Copy/Delete');
+define('HEADING_TITLE', 'Multiple Product Copy/Move/Delete');
 define('ERROR_ENTRY_REQUIRED', 'Entry is missing! Either at least one search term must be entered or else the category or manufacturer drop down must be set to a value or one of the Price fields must have a numeric value!');
 define('TEXT_HOW_TO_COPY', '<strong>How do you want to manage Found Products?</strong>');
 
@@ -25,6 +25,7 @@ define('TEXT_COPY_AS_LINK', 'Copy as Linked Products');
 define('TEXT_COPY_AS_DUPLICATE', 'Copy as Duplicate (new) Products');
 define('TEXT_COPYING_DUPLICATES', 'When creating Duplicate (new) Products:');
 define('TEXT_COPY_ATTRIBUTES', 'Copy existing Attributes?');
+define('TEXT_COPY_METATAGS', 'Copy existing Meta Tags?');
 define('TEXT_COPY_SPECIALS', 'Copy any existing Special Prices associated with selected products:');
 define('TEXT_COPY_FEATURED', 'Copy any existing Featured settings associated with selected products:');
 define('TEXT_COPY_DISCOUNTS', 'Copy any existing Quantity Discounts associated with selected products:');
