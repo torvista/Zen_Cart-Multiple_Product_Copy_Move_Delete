@@ -3,12 +3,14 @@
 Based on
 https://www.zen-cart.com/showthread.php?180447-Multiple-Products-(Copy-Move-Delete)
 
-2019 Current Status:
-This fileset is CURRENTLY being tested on php 7.3.11 and Zen Cart 1.5.7. It is NOT ready yet!
+-----------------------------
+2019 12 Current Status: being used on php 7.3.11 with Zen Cart 1.5.6
+
+This fileset is CURRENTLY being revised and heavily modified. It is "probably" still working but is not tested!
 
 USE AT OWN RISK - TEST THOROUGHLY ON YOUR DEVELOPMENT SERVER
 
-Please report all bugs here.
+Please report all bugs on Github.
 
 The plan is to clean this up and submit as a core file for Zen Cart 1.5.7...if people make the effort to make it ready...
 
@@ -112,6 +114,9 @@ b) Use the backup you kept of this fileset to compare and delete the files copie
 Changelog
 
 2019 11 torvista: under review
+remove table layout
+strict comparisons
+conversion to html with embedded php for IDE
 
 2019 10 torvista: put on Github.
 
