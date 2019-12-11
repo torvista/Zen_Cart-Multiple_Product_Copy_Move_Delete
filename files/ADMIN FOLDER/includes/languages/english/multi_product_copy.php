@@ -32,24 +32,24 @@ define('TEXT_COPY_DISCOUNTS', 'Copy any existing Quantity Discounts associated w
 define('TEXT_COPY_MEDIA_MANAGER', 'Copy any Media Manager collections associated with selected products:');
 
 define('ENTRY_COPY_TO', '<strong>Copy or Move Found Products to Target Category:</strong> ');
-define('ENTRY_COPY_TO_NOTE', ' <strong>*</strong> not used for Deleting Products');
+define('ENTRY_COPY_TO_NOTE', '(<strong>* not</strong> used for Deleting Products)');
 
 // Search
 define('TEXT_ENTER_CRITERIA', 'SEARCH CRITERIA:');
 define('TEXT_PRODUCTS_CATEGORY', 'Search In Category:');
 define('TEXT_ANY_CATEGORY', 'any category');
 define('ENTRY_INC_SUBCATS', 'include subcategories');
-define('ENTRY_DELETE_TO_NOTE', ' <strong>*</strong> used for Deleting Products');
-define('TEXT_ENTER_TERMS', 'Find products matching the following terms:');
-define('TEXT_NAME_ONLY', 'Search On Product Name, Model & Manufacturer Only');
+define('ENTRY_DELETE_TO_NOTE', ' (<strong>* used</strong> for Deleting Products)');
+define('TEXT_ENTER_SEARCH_KEYWORDS', 'Find products containing the following keywords:');
+define('TEXT_NAME_ONLY', 'Search in product Name, Model & Manufacturer only');
 define('TEXT_DESCRIPTIONS', 'Search In Product Descriptions Also');
 define('TEXT_PRODUCTS_MANUFACTURER', 'Manufacturer: ');
 define('TEXT_ANY_MANUFACTURER', 'any manufacturer');
-define('ENTRY_MIN_PRICE', 'Store Price At Least: ');
 define('TEXT_OPTIONAL', ' Optional');
-define('ENTRY_MAX_PRICE', 'Store Price Not More Than: ');
-define('ENTRY_PRODUCT_QUANTITY', ' Product Quantity &lt;= ');
-define('ENTRY_AUTO_CHECK', 'Automatically select Found Products:');
+define('ENTRY_MIN_PRICE', 'Store (displayed) Price &gt;=: ');
+define('ENTRY_MAX_PRICE', 'Store (displayed) Price &lt;=: ');
+define('ENTRY_MAX_PRODUCT_QUANTITY', ' Product Quantity &lt;= ');
+define('ENTRY_AUTO_CHECK', 'Automatically select matching products:');
 
 define('TEXT_TIPS', '<b>Notes:</b>
 <ul><li>Products currently existing in the Target Category are automatically excluded from the search (results).</li>

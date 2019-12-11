@@ -530,54 +530,60 @@ require(DIR_WS_INCLUDES . 'header.php');
                                     <label><?php echo zen_draw_radio_field('copy_media', 'on', true) . ' ' . TEXT_YES; ?></label>
                                     <label><?php echo zen_draw_radio_field('copy_media', 'off') . ' ' . TEXT_NO; ?></label></p>
 
-                                <?php
-                                echo ENTRY_COPY_TO . ' ' . zen_draw_pull_down_menu('copy_to', zen_get_category_tree('0', '', '',
+                                <label for="copy_to_target"><?php echo ENTRY_COPY_TO; ?></label>
+                                <?php echo zen_draw_pull_down_menu('copy_to',
+                                    zen_get_category_tree('0', '', '',
                                         [
                                             ['id' => '', 'text' => PLEASE_SELECT],
                                             ['id' => '0', 'text' => TEXT_TOP]
-                                        ])) . ENTRY_COPY_TO_NOTE; ?>
+                                        ]), '', 'id="copy_to_target"'); //todo make sticky ?>
+                                <?php echo ENTRY_COPY_TO_NOTE; ?>
                             </fieldset>
 
-                            <?php echo zen_draw_separator('pixel_black.gif', '50%', '2') . "<br>\n";
+                            <?php echo zen_draw_separator('pixel_black.gif', '50%', '2'); ?><br>
 
-                            echo '<p><b>' . TEXT_ENTER_CRITERIA . "</b></p>\n";
-
-                            echo "<p>\n";
-                            echo TEXT_PRODUCTS_CATEGORY . ' ' . zen_draw_pull_down_menu('category_id', zen_get_category_tree('0', '', '', array(
-                                    array('id' => '', 'text' => TEXT_ANY_CATEGORY),
-                                    array('id' => '0', 'text' => TEXT_TOP)
-                                )));
-                            echo '&nbsp;&nbsp;&nbsp;' . zen_draw_checkbox_field('inc_subcats',
-                                    'yes') . ENTRY_INC_SUBCATS . ' ' . ENTRY_DELETE_TO_NOTE . "</p>\n";
-                            echo '<p><b>' . TEXT_ENTER_TERMS . "</b></p>\n";
-
-                            echo zen_draw_input_field('keywords', '', 'size=50') . "<br>\n";
-                            echo zen_draw_radio_field('within', 'name') . '&nbsp;' . TEXT_NAME_ONLY;
-                            echo '&nbsp;' . zen_draw_radio_field('within', 'all', 'all') . '&nbsp;' . TEXT_DESCRIPTIONS . "<br>\n";
-                            $manufacturers_array = [['id' => '', 'text' => TEXT_ANY_MANUFACTURER]];
-                            $manufacturers_query = $db->Execute("SELECT manufacturers_id, manufacturers_name FROM " . TABLE_MANUFACTURERS . " ORDER BY manufacturers_name");
-                            while (!$manufacturers_query->EOF) {
-                                $manufacturers_array[] = [
-                                    'id' => $manufacturers_query->fields['manufacturers_id'],
-                                    'text' => $manufacturers_query->fields['manufacturers_name']
-                                ];
-                                $manufacturers_query->MoveNext();
-                            }
-                            echo TEXT_PRODUCTS_MANUFACTURER . zen_draw_pull_down_menu('manufacturer_id', $manufacturers_array) . "<br>\n";
-                            echo ENTRY_MIN_PRICE . zen_draw_input_field('min_price') . TEXT_OPTIONAL . "<br>\n";
-                            echo ENTRY_MAX_PRICE . zen_draw_input_field('max_price') . TEXT_OPTIONAL . "<br>\n";
-                            echo ENTRY_PRODUCT_QUANTITY . zen_draw_input_field('product_quantity',
-                                    'any') . TEXT_OPTIONAL . "<br><br>\n"; ?>
-                            <div>
-                                <?php echo ENTRY_AUTO_CHECK .
-                                    zen_draw_radio_field('autocheck', 'yes', 'true') . '&nbsp;' . TEXT_YES . '&nbsp;&nbsp;&nbsp;' .
-                                    zen_draw_radio_field('autocheck', 'no') . '&nbsp;' . TEXT_NO . '&nbsp;&nbsp;';
-                                echo zen_image_submit('button_preview.gif', IMAGE_PREVIEW); ?>
-                            </div>
+                            <fieldset>
+                                <legend><?php echo TEXT_ENTER_CRITERIA; ?></legend>
+                                <div>
+                                    <label for="categorySource"><?php echo TEXT_PRODUCTS_CATEGORY; ?></label>
+                                    <?php echo zen_draw_pull_down_menu('category_id', zen_get_category_tree('0', '', '', [
+                                        ['id' => '', 'text' => TEXT_ANY_CATEGORY],
+                                        ['id' => '0', 'text' => TEXT_TOP]
+                                    ]), '', 'id="categorySource"'); ?>
+                                    <label><?php echo zen_draw_checkbox_field('inc_subcats', 'yes') . ENTRY_INC_SUBCATS; ?></label><?php echo ENTRY_DELETE_TO_NOTE; ?></div>
+                                <div>
+                                    <label for="searchKeywords"><?php echo TEXT_ENTER_SEARCH_KEYWORDS; ?></label><?php echo zen_draw_input_field('keywords', '',
+                                        'size=50 id="searchKeywords"'); //todo simplify to checkbox?><br>
+                                    <label><?php echo TEXT_NAME_ONLY . zen_draw_radio_field('within',
+                                                'name'); ?></label>&nbsp;&nbsp;<label><?php echo TEXT_DESCRIPTIONS . zen_draw_radio_field('within', 'all', 'all'); ?></label></div>
+                                <div>
+                                    <?php $manufacturers_array = [['id' => '', 'text' => TEXT_ANY_MANUFACTURER]];
+                                    $manufacturers_query = $db->Execute("SELECT manufacturers_id, manufacturers_name FROM " . TABLE_MANUFACTURERS . " ORDER BY manufacturers_name");
+                                    foreach ($manufacturers_query as $manufacturer) {
+                                        $manufacturers_array[] = [
+                                            'id' => $manufacturer['manufacturers_id'],
+                                            'text' => $manufacturer['manufacturers_name']
+                                        ];
+                                    } ?>
+                                    <label for="searchManufacturer"><?php echo TEXT_PRODUCTS_MANUFACTURER; ?></label><?php echo zen_draw_pull_down_menu('manufacturer_id', $manufacturers_array, '',
+                                        'id="searchManufacturer"'); ?>
+                                </div>
+                                <div>
+                                    <label><?php echo ENTRY_MIN_PRICE . zen_draw_input_field('min_price'); ?></label><?php echo TEXT_OPTIONAL; ?><br>
+                                    <label><?php echo ENTRY_MAX_PRICE . zen_draw_input_field('max_price'); ?></label><?php echo TEXT_OPTIONAL; ?><br>
+                                    <label><?php echo ENTRY_MAX_PRODUCT_QUANTITY . zen_draw_input_field('product_quantity', 'any'); ?></label><?php echo TEXT_OPTIONAL; ?>
+                                </div>
+                                <div>
+                                    <p><?php echo ENTRY_AUTO_CHECK; ?>
+                                        <label><?php echo zen_draw_radio_field('autocheck', 'yes', 'true') . '&nbsp;' . TEXT_YES; ?></label>
+                                        <label><?php echo zen_draw_radio_field('autocheck', 'no') . '&nbsp;' . TEXT_NO; ?></label></p>
+                                </div>
+                                <?php echo zen_image_submit('button_preview.gif', IMAGE_PREVIEW); ?>
+                            </fieldset>
                         </div>
-                        <?php echo "</form>";
-                        echo zen_draw_separator('pixel_black.gif', '100%', '1') . "<br>\n";
-                        ?>
+                        <?php echo "</form>"; ?>
+
+                        <?php echo zen_draw_separator('pixel_black.gif', '100%', '1'); ?><br>
                         <div><?php echo TEXT_TIPS; ?></div>
                     </div>
                 </td>
