@@ -1,4 +1,4 @@
-<?php //steve TO CHANGE SORT ORDER go to line 338
+<?php
 /**steve for phpStorm inspections
  * @var messageStack $messageStack
  * @var zcObserverLogEventListener $zco_notifier
@@ -8,17 +8,8 @@
 /**Status 2019 12 24: reworking the confirm sql queries
  * Options to Check
  * 1) Copy as Linked Products: DONE
- *
- * 2) Copy as NEW Duplicate Products
- *      Copy existing Attributes?  Yes  No
- *      Copy existing Meta Tags?  Yes  No
- *      Copy any existing Special Prices associated with selected products:  Yes  No
- *      Copy any existing Featured settings associated with selected products:  Yes  No
- *      Copy any existing Quantity Discounts associated with selected products:  Yes  No
- *      Copy any Media Manager collections associated with selected products:  Yes  No
- *
+ * 2) Copy as NEW Duplicate Products: DONE
  * 3) Move Products to another Category
- *
  * 4) Delete Products permanently from ALL Categories?
  * 5) Delete Linked Products permanently from ONE Category?
  * 6) Delete Specials from Products?
@@ -66,7 +57,7 @@ if (in_array($copy_as, $delete_options, true)) {
 //Copy Duplicate products only: set default/initial page load as Yes
 $copy_attributes = isset($_POST['copy_attributes']) && $_POST['copy_attributes'] === 'copy_attributes_no' ? 'copy_attributes_no' : 'copy_attributes_yes';// name passed to copy_product_confirm.php
 $copy_metatags = isset($_POST['copy_metatags']) && $_POST['copy_metatags'] === 'copy_metatags_no' ? 'copy_metatags_no' : 'copy_metatags_yes'; // name passed to copy_product_confirm.php
-$copy_linked_categories = isset($_POST['copy_linked_categories']) && $_POST['copy_linked_categories'] === 'copy_linked_categories_yes' ? 'copy_linked_categories_yes' : 'copy_linked_categories_no'; // name passed to copy_product_confirm.php
+$copy_linked_categories = isset($_POST['copy_linked_categories']) && $_POST['copy_linked_categories'] === 'copy_linked_categories_no' ? 'copy_linked_categories_no' : 'copy_linked_categories_yes'; // name passed to copy_product_confirm.php
 $copy_discounts = isset($_POST['copy_discounts']) && $_POST['copy_discounts'] === 'copy_discounts_no' ? 'copy_discounts_no' : 'copy_discounts_yes'; // name passed to copy_product_confirm.php
 $copy_specials = isset($_POST['copy_specials']) && $_POST['copy_specials'] === 'copy_specials_no' ? 'copy_specials_no' : 'copy_specials_yes';
 $copy_featured = isset($_POST['copy_featured']) && $_POST['copy_featured'] === 'copy_featured_no' ? 'copy_featured_no' : 'copy_featured_yes';
@@ -301,7 +292,7 @@ switch ($action) {
 
 // bof: copy-duplicate
                         if ($copy_as === 'duplicate') { //if product found
-                            //$action = 'multiple_product_copy_return';//steve remove
+                            $action = 'multiple_product_copy_return'; // used to bypass default redirect in copy_product_confirm.php (core modification required)
                             $_POST['products_id'] = $id; // for copy_product_confirm
                             $_POST['categories_id'] = $target_category_id; // for copy_product_confirm
                             $product_type = zen_get_products_type($id); // for copy_product_confirm
@@ -312,42 +303,51 @@ switch ($action) {
                             } else {
                                 require(DIR_WS_MODULES . 'copy_product_confirm.php');
                             }
+                         //get confirmation messages
+                            if (isset($_SESSION['messageToStack']) && is_array($_SESSION['messageToStack'])) {
+                                /*for ($i = 0, $n = count($_SESSION['messageToStack']); $i < $n; $i++) {
+                                    $messageStack->add($_SESSION['messageToStack'][$i]['text'], $_SESSION['messageToStack'][$i]['type']);
+                                }*/
+                                foreach ($_SESSION['messageToStack'] as $row) {
+                                    $messageStack->add($row['text'], $row['type']);
+                                }
+                                $_SESSION['messageToStack'] = '';
+                            }
 
                             $dup_products_id = !empty($dup_products_id) ? $dup_products_id : 0; // $dup_products_id is the new product id created by the previous module, is integer. This check added to satisfy IDE
-                            if ($dup_products_id > 0) {die;
+                            if ($dup_products_id > 0) {
 
                                 if ($copy_specials === 'copy_specials_yes') {
                                     $chk_specials = $db->Execute("SELECT * FROM " . TABLE_SPECIALS . " WHERE products_id= " . (int)$id);
-                                    while (!$chk_specials->EOF) {
-                                        $db->Execute("INSERT INTO " . TABLE_SPECIALS . " (products_id, specials_new_products_price, specials_date_added, expires_date, status, specials_date_available)
-                              VALUES (" . $dup_products_id . ", '" . zen_db_input($chk_specials->fields['specials_new_products_price']) . "', now(), '" . zen_db_input($chk_specials->fields['expires_date']) . "', '1', '" . zen_db_input($chk_specials->fields['specials_date_available']) . "')");
-                                        $chk_specials->MoveNext();
+                                    foreach ($chk_specials as $row) {
+                                        $db->Execute("INSERT INTO " . TABLE_SPECIALS . " 
+                                        (products_id, specials_new_products_price, specials_date_added, expires_date, status, specials_date_available) VALUES 
+                                        (" . $dup_products_id . ", '" . zen_db_input($row['specials_new_products_price']) . "', now(), '" . zen_db_input($row['expires_date']) . "', '1', '" . zen_db_input($row['specials_date_available']) . "')");
+                                        $messageStack->add(sprintf(TEXT_COPY_AS_DUPLICATE_SPECIALS, $id, $dup_products_id), 'success');
                                     }
                                 }
 
                                 if ($copy_featured === 'copy_featured_yes') {
                                     $chk_featured = $db->Execute("SELECT * FROM " . TABLE_FEATURED . " WHERE products_id= " . (int)$id);
-                                    while (!$chk_featured->EOF) {
-                                        $db->Execute("INSERT INTO " . TABLE_FEATURED . "
-                              (products_id, featured_date_added, expires_date, status, featured_date_available)
-                              VALUES ('" . (int)$dup_products_id . "',
-                                      now(),
-                                      '" . zen_db_input($chk_featured->fields['expires_date']) . "', '1', '" . zen_db_input($chk_featured->fields['featured_date_available']) . "')");
+                                    foreach ($chk_featured as $row) {
+                                        $db->Execute("INSERT INTO " . TABLE_FEATURED . " 
+                                        (products_id, featured_date_added, expires_date, status, featured_date_available) VALUES 
+                                        (" . $dup_products_id . ", now(), '" . zen_db_input($row['expires_date']) . "', '1', '" . zen_db_input($row['featured_date_available']) . "')");
 
-                                        $chk_featured->MoveNext();
+                                        $messageStack->add(sprintf(TEXT_COPY_AS_DUPLICATE_FEATURED, $id, $dup_products_id), 'success');
                                     }
                                 }
 
                                 // reset products_price_sorter for searches etc.
-                                zen_update_products_price_sorter((int)$id);
+                                zen_update_products_price_sorter($id);
 
-                                $product_multi = $query;
                                 $items_set[] = [
-                                    'id' => $found_product['products_id'],
-                                    'manufacturer' => $found_product['manufacturers_name'],
-                                    'model' => $found_product['products_model'],
-                                    'name' => $found_product['products_name'],
-                                    'price' => zen_get_products_display_price($found_product['products_id'])
+                                    'id' => $dup_products_id,
+                                    'model' => zen_get_products_model($dup_products_id),
+                                    'name' => zen_get_products_name($dup_products_id),
+                                    'quantity' => zen_products_lookup($dup_products_id, 'products_quantity'),
+                                    'price' => zen_get_products_display_price($dup_products_id),
+                                    'manufacturer' => zen_get_products_manufacturers_name($dup_products_id)
                                 ];
                             } else {
                                 $messageStack->add(ERROR_COPY_DUPLICATE_NO_DUP_ID, $_POST['products_id'], $_POST['categories_id']);
@@ -657,7 +657,7 @@ require(DIR_WS_INCLUDES . 'header.php');
             <?php echo zen_draw_separator('pixel_black.gif', '100%', '1'); ?><br>
             <div><?php echo TEXT_TIPS; ?></div>
         </div>
-    <?php } elseif ($action === 'find' || $action === 'confirm') { ?>
+    <?php } elseif ($action === 'find' || $action === 'confirm' || $action === 'multiple_product_copy_return') { ?>
         <div>
             <?php ob_start(); // capture Search Criteria parameters for reuse?>
             <div>
@@ -831,10 +831,8 @@ require(DIR_WS_INCLUDES . 'header.php');
                                     $product_image = zen_image(DIR_WS_CATALOG_IMAGES . $search_result['products_image'], $search_result['products_name'],
                                         SMALL_IMAGE_WIDTH, SMALL_IMAGE_HEIGHT);
                                 }
-                            } else {
-                                $product_image = '';
-                            }
-                            ?>
+                            } ?>
+
                             <tr class="dataTableRow">
                                 <td class="dataTableContent text-center">
                                     <?php
@@ -913,11 +911,11 @@ require(DIR_WS_INCLUDES . 'header.php');
         </div>
 
         <?php
-    } elseif ($action === 'confirm') { //results
+    } elseif ($action === 'confirm' || $action === 'multiple_product_copy_return') { //results
 
         if ($copy_as === 'link' || $copy_as === 'duplicate' || $copy_as === 'move') { ?>
             <div>
-                <h4><?php echo sprintf(TEXT_PRODUCTS_COPIED, count($items_set)); ?></h4>
+                <h4><?php echo sprintf(TEXT_PRODUCTS_COPIED_TO, count($items_set), $target_category_id, zen_get_category_name($target_category_id, (int)$_SESSION['languages_id'])); ?></h4>
                 <table class="table">
                     <thead>
                     <tr class="dataTableHeadingRow">

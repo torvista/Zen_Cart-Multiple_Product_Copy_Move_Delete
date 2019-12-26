@@ -4,9 +4,9 @@ Based on
 https://www.zen-cart.com/showthread.php?180447-Multiple-Products-(Copy-Move-Delete)
 
 -----------------------------
-2019 12 Current Status: being used on php 7.3.11 with Zen Cart 1.5.6
+2019 12 Current Status: being used on php 7.3.11 with Zen Cart 1.5.7
 copy as link: tested and working
-copy as duplicate: not working for multiple product duplication, specials, featured
+copy as duplicate: tested and working
 move: not tested
 delete optiones: not tested
 

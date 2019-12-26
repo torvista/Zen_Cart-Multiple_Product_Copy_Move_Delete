@@ -125,16 +125,19 @@ define('BUTTON_NEW_SEARCH', 'New Search');
 define('TEXT_NO_MATCHING_PRODUCTS_FOUND', 'No products were found that matched the search criteria or all matching products already exist in the target category.');
 define('TEXT_PRODUCTS_COPIES', 'The following products were copied:');
 define('TEXT_PRODUCTS_FOUND', '%u product(s) found.');
-define('TEXT_PRODUCTS_COPIED', '%u product(s) copied');
+define('TEXT_PRODUCTS_COPIED_TO', '%1$u product(s) copied to Category ID#%2$u "%3$s"');
 //Results Move
 //Results Copy Linked
 
 //Results Copy Duplicates
 //these four constants used in copy_product_confirm
-define('TEXT_COPY_AS_DUPLICATE_ATTRIBUTES', 'Attributes copied from Product ID#%u to duplicate Product ID#%u');
-define('TEXT_COPY_AS_DUPLICATE_METATAGS', 'Metatags for Language ID#%u copied from Product ID#%u to duplicate Product ID#%u');
-define('TEXT_COPY_AS_DUPLICATE_CATEGORIES', 'Linked Category ID#%u copied from Product ID#%u to duplicate Product ID#%u');
-define('TEXT_COPY_AS_DUPLICATE_DISCOUNTS', 'Discounts copied from Product ID#%u to duplicate Product ID#%u');
+define('TEXT_COPY_AS_DUPLICATE_ATTRIBUTES', 'Attributes copied from Product ID#%1$u to duplicate Product ID#%2$u');
+define('TEXT_COPY_AS_DUPLICATE_METATAGS', 'Metatags for Language ID#%1$u copied from Product ID#%2$u to duplicate Product ID#%3$u');
+define('TEXT_COPY_AS_DUPLICATE_CATEGORIES', 'Linked Category ID#%1$u copied from Product ID#%2$u to duplicate Product ID#%3$u');
+define('TEXT_COPY_AS_DUPLICATE_DISCOUNTS', 'Discounts copied from Product ID#%1$u to duplicate Product ID#%2$u');
+
+define('TEXT_COPY_AS_DUPLICATE_SPECIALS', 'Special price copied from Product ID#%1$u to duplicate Product ID#%2$u');
+define('TEXT_COPY_AS_DUPLICATE_FEATURED', 'Featured settings copied from Product ID#%1$u to duplicate Product ID#%2$u');
 
 //Not reviewed yet
 /////////////////////////////////////////////////////////////
