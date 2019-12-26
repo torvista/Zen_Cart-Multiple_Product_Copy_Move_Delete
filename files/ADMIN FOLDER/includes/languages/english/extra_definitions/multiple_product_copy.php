@@ -8,6 +8,7 @@
    $Id: multi_product_copy.php ver 1.392 by Linda McGrath 2011-11-15
 */
 /**
- * extra definitions
+ * Catalog Box menu
 */
-  define('FILENAME_MULTIPLE_PRODUCT_COPY', 'multiple_product_copy');
+
+define('BOX_CATALOG_MULTIPLE_PRODUCT_COPY', 'Multiple Product Copy');

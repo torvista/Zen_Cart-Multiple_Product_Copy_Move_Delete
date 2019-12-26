@@ -1,1 +1,1 @@
-INSERT INTO `admin_pages` (`page_key`, `language_key`, `main_page`, `page_params`, `menu_key`, `display_on_menu`, `sort_order`) VALUES ('multipleProductCopy', 'BOX_CATALOG_MULTI_COPY', 'FILENAME_MULTI_COPY', '', 'catalog', 'Y', 30);
+INSERT INTO `admin_pages` (`page_key`, `language_key`, `main_page`, `page_params`, `menu_key`, `display_on_menu`, `sort_order`) VALUES ('multipleProductCopy', 'BOX_CATALOG_MULTIPLE_PRODUCT_COPY', 'FILENAME_MULTIPLE_PRODUCT_COPY', '', 'catalog', 'Y', 30);

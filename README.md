@@ -5,14 +5,18 @@ https://www.zen-cart.com/showthread.php?180447-Multiple-Products-(Copy-Move-Dele
 
 -----------------------------
 2019 12 Current Status: being used on php 7.3.11 with Zen Cart 1.5.6
+copy as link: tested and working
+copy as duplicate: not working for multiple product duplication, specials, featured
+move: not tested
+delete optiones: not tested
 
 This fileset is CURRENTLY being revised and heavily modified. It is "probably" still working but is not tested!
 
 USE AT OWN RISK - TEST THOROUGHLY ON YOUR DEVELOPMENT SERVER
 
-Please report all bugs on Github.
+Please report all bugs on Github ONLY for the functions listed above as tested and working
 
-The plan is to clean this up and submit as a core file for Zen Cart 1.5.7...if people make the effort to make it ready...
+The plan is to clean this up and submit as a core file for Zen Cart 1.5.7...
 
 -----------------------------
 This utility allows you to perform multiple actions in one process.
@@ -113,10 +117,27 @@ b) Use the backup you kept of this fileset to compare and delete the files copie
 ---------------------
 Changelog
 
-2019 11 torvista: under review
+2019 12 torvista: complete revision
 remove table layout
 strict comparisons
-conversion to html with embedded php for IDE
+conversion to html with embedded php
+html validation
+expanded error checking for search critera
+
+Copy-Link
+
+Copy-Duplicate
+Allow copy-duplicate to the same category
+Added duplication of meta tags
+Removed duplication of media collection (original version showed option, but was not implemented in code)
+
+Move
+
+Delete
+
+Results
+check/uncheck all selectboxes with javascript
+added option show images
 
 2019 10 torvista: put on Github.
 
