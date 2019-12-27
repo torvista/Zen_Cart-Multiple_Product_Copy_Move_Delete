@@ -25,6 +25,7 @@ if ($duplicate_check->fields['total'] < 1) {
                 WHERE products_id = " . (int)$products_id . "
                 AND categories_id = " . (int)$current_category_id);
 
+    $messageStack->add_session(sprintf(TEXT_PRODUCT_MOVED, (int)$products_id, (int)$new_parent_id), 'success');
   // reset master_categories_id if moved from original master category
   $check_master = $db->Execute("SELECT products_id, master_categories_id
                                 FROM " . TABLE_PRODUCTS . "
@@ -33,6 +34,7 @@ if ($duplicate_check->fields['total'] < 1) {
     $db->Execute("UPDATE " . TABLE_PRODUCTS . "
                   SET master_categories_id = " . (int)$new_parent_id . "
                   WHERE products_id = " . (int)$products_id);
+      $messageStack->add_session(sprintf(TEXT_PRODUCT_MASTER_CATEGORY_RESET, (int)$products_id, (int)$new_parent_id), 'caution');
   }
 
   // reset products_price_sorter for searches etc.
@@ -43,7 +45,7 @@ if ($duplicate_check->fields['total'] < 1) {
 }
 
 // bof: change for multiple_product_copy
-if ($action != 'multiple_product_copy_return') {
+if (!isset($action) || $action !== 'multiple_product_copy_return') {
 zen_redirect(zen_href_link(FILENAME_CATEGORY_PRODUCT_LISTING, 'cPath=' . $new_parent_id . '&pID=' . $products_id . (isset($_GET['page']) ? '&page=' . $_GET['page'] : '')));
 }
 // eof: change for multiple_product_copy

@@ -23,7 +23,7 @@ define('TEXT_COPY_SPECIALS', 'Copy Special Prices');
 define('TEXT_COPY_FEATURED', 'Copy Featured settings');
 define('TEXT_COPY_MEDIA_MANAGER', 'Copy Media Manager collections');
 define('TEXT_MOVE_TO', 'Move Products');
-define('TEXT_MOVE_PRODUCTS_INFO', '"Moving" products means the products Master Category ID\'s will be set to that of the Target Category.');
+define('TEXT_MOVE_PRODUCTS_INFO', 'Linked Products will be unlinked from their current category and linked to the Target Category.<br>Products in their Master Category will have their Master Category ID changed to that of the Target Category.');
 define('TEXT_TARGET_CATEGORY', 'Target Category (for Copy/Move):');
 
 define('TEXT_COPY_AS_DELETE_ONE', 'Delete Linked Products permanently from ONE Category');
@@ -54,30 +54,23 @@ define('TEXT_ORDER_BY_QUANTITY', 'Quantity');
 define('TEXT_ORDER_BY_STATUS', 'Status');
 
 define('TEXT_TIPS', '<h2>Notes:</h2>
-<ul><li>Products currently existing in the Target Category are automatically excluded from the search (results).</li>
-<li>Search terms may be left blank if either a Category or a Manufacturer is selected,  or one of the Store Price fields has a value.</li>
-<li>Leave the Store Price fields blank if you are not searching for products based on price.</li>
-<li>Leave the Product Quantity field set to any if you are not searching for products based on quantity.</li>
+<h3>Searching:</h3>
+<ul><li>Products currently existing in the Target Category are automatically excluded from the search results.</li>
+<li>Search keywords may be left blank if either a Category or a Manufacturer is selected,  or one of the Store Price fields has a value.</li>
 <li>You may search using only <strong>one</strong> of the Store Price fields if you want to find all products with prices greater/less than a specific amount.</li>
 <li>The decimal separator in the Store Price entries <strong>must</strong> be a \'.\' (decimal-point), example: <b>49.99</b></li></ul>
-<h3>When copying Products as Duplicate (new) Products:</h3>
-<ul><li>for Attributes with Downloads, the Download filename is NOT copied.</li>
-<li>Product Specials can be optionally copied.</li>
-<li>Product Featured can be optionally copied.</li>
-<li>Product Discount Quantities can be optionally copied.</li>
-<li>Music Products Media Manager collections can be optionally copied.</li>
+<h3>Copy as Duplicate (new) Products:</h3>
+<ul><li>Attributes can be optionally copied. But for Downloads, the Download filename is NOT copied.</li>
 <li>Reviews are NOT copied.</li></ul>
+<h3>Moving Products</h3>
+<ul><li></li></ul>
 <h3>Deleting Products</h3>
 <h4>Delete Products permanently from ALL Categories:</h4>
 <ul><li>Deletions are permanent and cannot be undone</li>
 <li>If the product Main Image is unique, it will be deleted, as will the Main Image Medium and Large Image. Additional Images and Additional Large Images will NOT be removed</li></ul>
 <h4>Delete Linked Products permanently from ONE Category:</h4>
 <ul><li>Deleting from ONE Category will unlink a Product from that Category.</li>
-<li>If that Category is the master_categories_id, the master_categories_id will be reset.</li></ul>
-<h3>Examples:</h3>
-<p>To copy products as Duplicate (new) Products, from one Category to another, select the <strong>Copy or Move Found Products to Target Category</strong> and select the <strong>Search From Category</strong>. You can optionally include subcategories.<br></p>
-<p>To search for Products, you can enter search words in the <strong>Find products matching the following terms</strong>; and, optionally select a Category to search from.<br>And base the search on:  Search On Product Name, Model & Manufacturer Only -or- Search In Product Descriptions Also.<br></p>
-<p>To search based on Manufacturer, select a Manufacturer from the drop down; this can then be limited to a Category or by using the search terms.</p>');
+<li>If that Category is the master_categories_id, the master_categories_id will be reset.</li></ul>');
 
 //Results
 define('TEXT_SEARCH_RESULT_CATEGORY', 'Search category: %s');
@@ -107,27 +100,17 @@ define('TABLE_HEADING_PRICE', 'Store Price');
 define('TABLE_HEADING_QUANTITY', 'Quantity');
 define('TABLE_HEADING_MFG', 'Manufacturer');
 
-
-
 define('IMAGE_ICON_MASTER_CATEGORY_THIS', 'master category is ID#%u');
 define('IMAGE_ICON_MASTER_CATEGORY_ELSE', 'master category is ID#%u');
 
+define('ENTRY_OPEN_CATEGORY_LISTING', 'Open Target Category Listing after Copy/Move');
 define('BUTTON_RETRY', 'Modify Search');
 define('BUTTON_CATEGORY_LISTING_SEARCH', 'Product Listing - Search Category');
 define('BUTTON_CATEGORY_LISTING_TARGET', 'Product Listing - Target Category');
 define('TEXT_EXISTING_PRODUCTS_NOT_SHOWN', 'Only matching products <strong>not already present</strong> in the Target Category are listed.');
 
-//Results Delete
-
-define('TEXT_DELETE_FROM_ONE', 'Category "%2$s" ID#%1$u');
-define('TEXT_DISABLED', 'disabled');
-define('BUTTON_NEW_SEARCH', 'New Search');
-define('TEXT_NO_MATCHING_PRODUCTS_FOUND', 'No products were found that matched the search criteria or all matching products already exist in the target category.');
-define('TEXT_PRODUCTS_COPIES', 'The following products were copied:');
-define('TEXT_PRODUCTS_FOUND', '%u product(s) found.');
-define('TEXT_PRODUCTS_COPIED_TO', '%1$u product(s) copied to Category ID#%2$u "%3$s"');
-//Results Move
 //Results Copy Linked
+define('TEXT_PRODUCTS_COPIED_TO', '%1$u product(s) copied to Category ID#%2$u "%3$s"');
 
 //Results Copy Duplicates
 //these four constants used in copy_product_confirm
@@ -135,9 +118,22 @@ define('TEXT_COPY_AS_DUPLICATE_ATTRIBUTES', 'Attributes copied from Product ID#%
 define('TEXT_COPY_AS_DUPLICATE_METATAGS', 'Metatags for Language ID#%1$u copied from Product ID#%2$u to duplicate Product ID#%3$u');
 define('TEXT_COPY_AS_DUPLICATE_CATEGORIES', 'Linked Category ID#%1$u copied from Product ID#%2$u to duplicate Product ID#%3$u');
 define('TEXT_COPY_AS_DUPLICATE_DISCOUNTS', 'Discounts copied from Product ID#%1$u to duplicate Product ID#%2$u');
-
+//these two constants used in move_product_confirm
+define('TEXT_PRODUCT_MOVED', 'Product ID#%1$u moved to Category ID#%2$u');
+define('TEXT_PRODUCT_MASTER_CATEGORY_RESET', 'Product ID#%1$u Master Category ID changed to Category ID#%2$u');
 define('TEXT_COPY_AS_DUPLICATE_SPECIALS', 'Special price copied from Product ID#%1$u to duplicate Product ID#%2$u');
 define('TEXT_COPY_AS_DUPLICATE_FEATURED', 'Featured settings copied from Product ID#%1$u to duplicate Product ID#%2$u');
+
+//Results Move
+define('TEXT_PRODUCTS_MOVED_TO', '%1$u product(s) moved to Category ID#%2$u "%3$s"');
+
+//Results Delete
+define('TEXT_DELETE_FROM_ONE', 'Category "%2$s" ID#%1$u');
+define('TEXT_DISABLED', 'disabled');
+define('BUTTON_NEW_SEARCH', 'New Search');
+define('TEXT_NO_MATCHING_PRODUCTS_FOUND', 'No products were found that matched the search criteria or all matching products already exist in the target category.');
+define('TEXT_PRODUCTS_COPIES', 'The following products were copied:');
+define('TEXT_PRODUCTS_FOUND', '%u product(s) found.');
 
 //Not reviewed yet
 /////////////////////////////////////////////////////////////
