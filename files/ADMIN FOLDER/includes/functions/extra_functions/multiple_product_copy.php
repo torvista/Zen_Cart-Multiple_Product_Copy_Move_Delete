@@ -4,38 +4,38 @@
  * @copyright Copyright 2003-2010 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
-   $Id: multi_product_copy.php ver 1.11 by Kevin L. Shelton 2010-10-15
-   $Id: multi_product_copy.php ver 1.392 by Linda McGrath 2011-11-15
-*/
+ */
+
+if (function_exists('zen_register_admin_page') && !zen_page_key_exists('multipleProductCopy')) {
+    zen_register_admin_page('multipleProductCopy', 'BOX_CATALOG_MULTIPLE_PRODUCT_COPY', 'FILENAME_MULTIPLE_PRODUCT_COPY', '', 'catalog', 'Y');
+    //$messageStack->add('Admin page registered: Catalog -> Multiple Product Copy', 'info');//steve messageStack not available at this moment
+    echo '<h4>Admin page registered: Catalog -> Multiple Product Copy</h4>';//steve better than nothing
+}
 /**
- * extra functions
  * @param $manufacturers_id
  * @return mixed|string
  */
-
-function zen_get_manufacturers_name($manufacturers_id) {
+function zen_get_manufacturers_name($manufacturers_id)
+{
     global $db;
     $manufacturer = $db->Execute("select manufacturers_name
                                   from " . TABLE_MANUFACTURERS . "
                                   where manufacturers_id = " . (int)$manufacturers_id . " LIMIT 1");
-    if ($manufacturer->EOF) return '';
+    if ($manufacturer->EOF) {
+        return '';
+    }
     return $manufacturer->fields['manufacturers_name'];
 }
 
-function list_subcategories($parent_id) // only used in case $action = find, for Delete with subcategories
-{
-    global $db;
-    $list_categories = $db->Execute("SELECT categories_id FROM " . TABLE_CATEGORIES . " WHERE parent_id = " . (int)$parent_id);
-    $list = '';
-    while (!$list_categories->EOF) {
-        $list .= ',' . $list_categories->fields['categories_id'] . list_subcategories($list_categories->fields['categories_id']);
-        $list_categories->MoveNext();
-    }
-    return $list;
-}
-//Copied from Catalog functions
+//Copied from Catalog functions but with required parameter first
 // Parse search string into indivual objects
-function zen_parse_search_string($search_str = '', &$objects) {
+/**
+ * @param $objects
+ * @param string $search_str
+ * @return bool
+ */
+function zen_parse_search_string(&$objects, $search_str = '')
+{
     $search_str = trim(strtolower($search_str));
 
 // Break up $search_str on whitespace; quoted string will be reconstructed later
@@ -44,7 +44,7 @@ function zen_parse_search_string($search_str = '', &$objects) {
     $tmpstring = '';
     $flag = '';
 
-    for ($k=0; $k<count($pieces); $k++) {
+    for ($k = 0; $k < count($pieces); $k++) {
         while (substr($pieces[$k], 0, 1) == '(') {
             $objects[] = '(';
             if (strlen($pieces[$k]) > 1) {
@@ -56,7 +56,7 @@ function zen_parse_search_string($search_str = '', &$objects) {
 
         $post_objects = array();
 
-        while (substr($pieces[$k], -1) == ')')  {
+        while (substr($pieces[$k], -1) == ')') {
             $post_objects[] = ')';
             if (strlen($pieces[$k]) > 1) {
                 $pieces[$k] = substr($pieces[$k], 0, -1);
@@ -67,10 +67,10 @@ function zen_parse_search_string($search_str = '', &$objects) {
 
 // Check individual words
 
-        if ( (substr($pieces[$k], -1) != '"') && (substr($pieces[$k], 0, 1) != '"') ) {
+        if ((substr($pieces[$k], -1) != '"') && (substr($pieces[$k], 0, 1) != '"')) {
             $objects[] = trim($pieces[$k]);
 
-            for ($j=0, $n=count($post_objects); $j<$n; $j++) {
+            for ($j = 0, $n = count($post_objects); $j < $n; $j++) {
                 $objects[] = $post_objects[$j];
             }
         } else {
@@ -83,13 +83,13 @@ function zen_parse_search_string($search_str = '', &$objects) {
             $tmpstring = trim(preg_replace('/"/', ' ', $pieces[$k]));
 
 // Check for one possible exception to the rule. That there is a single quoted word.
-            if (substr($pieces[$k], -1 ) == '"') {
+            if (substr($pieces[$k], -1) == '"') {
 // Turn the flag off for future iterations
                 $flag = 'off';
 
                 $objects[] = trim($pieces[$k]);
 
-                for ($j=0, $n=count($post_objects); $j<$n; $j++) {
+                for ($j = 0, $n = count($post_objects); $j < $n; $j++) {
                     $objects[] = $post_objects[$j];
                 }
 
@@ -107,7 +107,7 @@ function zen_parse_search_string($search_str = '', &$objects) {
 
 // Keep reading until the end of the string as long as the $flag is on
 
-            while ( ($flag == 'on') && ($k < count($pieces)) ) {
+            while (($flag == 'on') && ($k < count($pieces))) {
                 while (substr($pieces[$k], -1) == ')') {
                     $post_objects[] = ')';
                     if (strlen($pieces[$k]) > 1) {
@@ -135,7 +135,7 @@ function zen_parse_search_string($search_str = '', &$objects) {
 // Push the $tmpstring onto the array of stuff to search for
                     $objects[] = trim($tmpstring);
 
-                    for ($j=0, $n=count($post_objects); $j<$n; $j++) {
+                    for ($j = 0, $n = count($post_objects); $j < $n; $j++) {
                         $objects[] = $post_objects[$j];
                     }
 
@@ -150,14 +150,14 @@ function zen_parse_search_string($search_str = '', &$objects) {
 
 // add default logical operators if needed
     $temp = array();
-    for($i=0; $i<(count($objects)-1); $i++) {
+    for ($i = 0; $i < (count($objects) - 1); $i++) {
         $temp[] = $objects[$i];
-        if ( ($objects[$i] != 'and') &&
+        if (($objects[$i] != 'and') &&
             ($objects[$i] != 'or') &&
             ($objects[$i] != '(') &&
-            ($objects[$i+1] != 'and') &&
-            ($objects[$i+1] != 'or') &&
-            ($objects[$i+1] != ')') ) {
+            ($objects[$i + 1] != 'and') &&
+            ($objects[$i + 1] != 'or') &&
+            ($objects[$i + 1] != ')')) {
             $temp[] = ADVANCED_SEARCH_DEFAULT_OPERATOR;
         }
     }
@@ -167,17 +167,21 @@ function zen_parse_search_string($search_str = '', &$objects) {
     $keyword_count = 0;
     $operator_count = 0;
     $balance = 0;
-    for($i=0; $i<count($objects); $i++) {
-        if ($objects[$i] == '(') $balance --;
-        if ($objects[$i] == ')') $balance ++;
-        if ( ($objects[$i] == 'and') || ($objects[$i] == 'or') ) {
-            $operator_count ++;
-        } elseif ( (is_string($objects[$i]) && $objects[$i] == '0') || ($objects[$i]) && ($objects[$i] != '(') && ($objects[$i] != ')') ) {
-            $keyword_count ++;
+    for ($i = 0; $i < count($objects); $i++) {
+        if ($objects[$i] == '(') {
+            $balance--;
+        }
+        if ($objects[$i] == ')') {
+            $balance++;
+        }
+        if (($objects[$i] == 'and') || ($objects[$i] == 'or')) {
+            $operator_count++;
+        } elseif ((is_string($objects[$i]) && $objects[$i] == '0') || ($objects[$i]) && ($objects[$i] != '(') && ($objects[$i] != ')')) {
+            $keyword_count++;
         }
     }
 
-    if ( ($operator_count < $keyword_count) && ($balance == 0) ) {
+    if (($operator_count < $keyword_count) && ($balance == 0)) {
         return true;
     } else {
         return false;
