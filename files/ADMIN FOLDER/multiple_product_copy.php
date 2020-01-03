@@ -640,7 +640,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                         <div class="col-sm-12">
                             <label><?php echo zen_draw_radio_field('copy_as', 'delete_specials', ($copy_as === 'delete_specials')) . ' ' . TEXT_COPY_AS_DELETE_SPECIALS; ?></label><br>
                             <label><?php echo zen_draw_radio_field('copy_as', 'delete_linked', ($copy_as === 'delete_linked')) . ' ' . TEXT_COPY_AS_DELETE_LINKED; ?></label><br>
-                            <label><?php echo zen_draw_radio_field('copy_as', 'delete_all', ($copy_as === 'delete_all')) . ' ' . TEXT_COPY_AS_DELETE_ALL; ?></label>
+                            <label><?php echo zen_draw_radio_field('copy_as', 'delete_all', ($copy_as === 'delete_all')) . ' ' . TEXT_COPY_AS_DELETE_ALL; ?></label><br><?php echo TEXT_COPY_AS_DELETE_ALL_INFO; ?>
                         </div>
                     </div>
                 </fieldset>

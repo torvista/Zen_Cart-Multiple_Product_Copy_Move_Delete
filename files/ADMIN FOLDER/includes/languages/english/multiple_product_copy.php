@@ -29,7 +29,7 @@ define('TEXT_TARGET_CATEGORY', 'Target Category (for Copy/Move):');
 define('TEXT_COPY_AS_DELETE_SPECIALS', 'Delete Specials from Products');
 define('TEXT_COPY_AS_DELETE_LINKED', 'Delete Linked Products');
 define('TEXT_COPY_AS_DELETE_ALL', 'Delete Any Products');
-define('TEXT_COPY_AS_DELETE_ALL_INFO', 'This option allows the multiple permanent deletion of products. Selection of any product (whether linked/master) will delete <span style="text-decoration: underline">ALL INSTANCES</span> (both master and linked) of that product. USE WITH CERTITUDE!');
+define('TEXT_COPY_AS_DELETE_ALL_INFO', 'This option allows the multiple permanent deletion of products. Selection of any product (whether linked/master) will delete <span style="text-decoration: underline">ALL INSTANCES</span> (both master and linked) of that product. USE WITH FEAR!');
 
 // Search Criteria
 define('TEXT_ENTER_CRITERIA', 'Search/Filter Criteria:');
