@@ -34,6 +34,12 @@ Click the Confirm button and all of the checked products will be now linked as L
 Clicking the "Return To Catalog Entry" button after the copy is done will open the destination category for review.
 
 Install
+DO NOT TEST ON YOUR PRODUCTION SERVER!!!!
+DO NOT TEST ON YOUR PRODUCTION SERVER!!!!
+DO NOT TEST ON YOUR PRODUCTION SERVER!!!!
+
+0) Remove the previous version of this mod as per that version's instructions.
+
 1) Copy the files in:
 /ADMIN FOLDER
 to YOUR admin directory.
