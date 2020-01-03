@@ -157,14 +157,10 @@ if ($action === 'find' || $action === 'confirm') { // validate form values from 
         $categories_selected = array_map(static function ($value) { // make array (integers) of category IDs of products as selected on Preview page 2. For Delete One
             return (int)$value;
         }, $_POST['category']);
-        /*steve $products_categories_selected = [];
-        foreach ($products_selected as $key=>$value) {
-            $products_categories_selected[$value] = $categories_selected[(int)$key];
-        }*/
-
-        mv_printVar($products_selected);
-        mv_printVar($categories_selected);
-        //mv_printVar($products_categories_selected);
+        if ($debug_mpc) {//steve
+            mv_printVar($products_selected);
+            mv_printVar($categories_selected);
+        }
 
         switch (true) {
             case ($cnt !== count($found)): // should never happen!
