@@ -37,8 +37,8 @@ if ($debug_mpc) {//steve debug
     }
     mv_printVar($_POST);//steve debug
     $output = ob_get_clean();//steve debug
+    $messageStack->add($output, 'info');//steve debug
 }
-$messageStack->add($output, 'info');//steve debug
 ///////////////////////////////////////////////////////////
 
 
