@@ -24,13 +24,13 @@ if ($debug_mpc) {//steve debug
             $backtrace = debug_backtrace()[0];
             $fh = fopen($backtrace['file'], 'rb');
             $line = 0;
+            $code = '';
             while (++$line <= $backtrace['line']) {
                 $code = fgets($fh);
             }
             fclose($fh);
             preg_match('/' . __FUNCTION__ . '\s*\((.*)\)\s*;/u', $code, $name);
             echo '<pre><strong>' . trim($name[1]) . ":</strong>\n";
-            //var_export($a);
             print_r($a);
             echo '</pre><br>';
         }

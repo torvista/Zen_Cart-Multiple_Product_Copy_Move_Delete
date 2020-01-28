@@ -63,8 +63,6 @@ define('TEXT_TIPS', '<h2>Notes:</h2>
 <h3>Copy as Duplicate (new) Products:</h3>
 <ul><li>Attributes can be optionally copied. But for Downloads, the Download filename is NOT copied.</li>
 <li>Reviews are NOT copied.</li></ul>
-<h3>Moving Products</h3>
-<ul><li></li></ul>
 <h3>Deleting Products</h3>
 <h4>Delete Products permanently from ALL Categories:</h4>
 <ul><li>Deletions are permanent and cannot be undone</li>
