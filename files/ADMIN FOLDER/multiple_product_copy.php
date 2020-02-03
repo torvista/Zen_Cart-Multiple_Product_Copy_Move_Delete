@@ -8,40 +8,6 @@
 
 require('includes/application_top.php');
 
-///////////////////////////////////////////////////////
-//temporary debugging code
-/**steve for phpStorm inspections
- * @var messageStack $messageStack
- * @var zcObserverLogEventListener $zco_notifier
- * @var products $zc_products
- */
-$debug_mpc = false;
-if ($debug_mpc) {//steve debug
-    ob_start();
-    if (!function_exists('mv_printVar')) {
-        function mv_printVar($a)
-        {
-            $backtrace = debug_backtrace()[0];
-            $fh = fopen($backtrace['file'], 'rb');
-            $line = 0;
-            $code = '';
-            while (++$line <= $backtrace['line']) {
-                $code = fgets($fh);
-            }
-            fclose($fh);
-            preg_match('/' . __FUNCTION__ . '\s*\((.*)\)\s*;/u', $code, $name);
-            echo '<pre><strong>' . trim($name[1]) . ":</strong>\n";
-            print_r($a);
-            echo '</pre><br>';
-        }
-    }
-    mv_printVar($_POST);//steve debug
-    $output = ob_get_clean();//steve debug
-    $messageStack->add($output, 'info');//steve debug
-}
-///////////////////////////////////////////////////////////
-
-
 require(DIR_WS_CLASSES . 'currencies.php');
 $currencies = new currencies();
 
@@ -135,7 +101,7 @@ if ($action === 'find' || $action === 'confirm') { // validate form values from 
         $messageStack->add($error_message);
         $action = 'new';
     } elseif (!$delete_option) { // build a list of the products already in the target category, not for Delete. This is used in both 'find' and 'confirm'.
-        $check = $db->Execute("SELECT products_id FROM " . TABLE_PRODUCTS_TO_CATEGORIES . " WHERE categories_id = " . $target_category_id);
+        $check = $db->Execute('SELECT products_id FROM ' . TABLE_PRODUCTS_TO_CATEGORIES . ' WHERE categories_id = ' . $target_category_id);
         $products_in_target_category = [];
         foreach ($check as $row) {
             $products_in_target_category[] = (int)$row['products_id'];
@@ -157,10 +123,6 @@ if ($action === 'find' || $action === 'confirm') { // validate form values from 
         $categories_selected = array_map(static function ($value) { // make array (integers) of category IDs of products as selected on Preview page 2. For Delete One
             return (int)$value;
         }, $_POST['category']);
-        if ($debug_mpc) {//steve
-            mv_printVar($products_selected);
-            mv_printVar($categories_selected);
-        }
 
         switch (true) {
             case ($cnt !== count($found)): // should never happen!
@@ -288,9 +250,7 @@ FROM " . TABLE_PRODUCTS . " p
         }
         $search_sql .= $where_str . $order_by_str; // ORDER BY pd.products_name
         $search_results = $db->Execute($search_sql);
-        if ($debug_mpc) {//steve debug
-            $messageStack->add($search_sql, 'info');
-        }
+
         if ($search_results->EOF) {
             $action = 'new';
             $messageStack->add(TEXT_NO_MATCHING_PRODUCTS_FOUND, 'info');
@@ -301,10 +261,10 @@ FROM " . TABLE_PRODUCTS . " p
         $products_modified = [];
         foreach ($products_selected as $key => $id) { //$id is an integer
 
-            $found_product = $db->Execute("SELECT p.products_id, p.products_model, p.master_categories_id, p.products_price_sorter, p.products_quantity,  pd.products_name,  m.manufacturers_name FROM " . TABLE_PRODUCTS . " p 
-                    LEFT JOIN " . TABLE_MANUFACTURERS . " m ON p.manufacturers_id = m.manufacturers_id, " . TABLE_PRODUCTS_DESCRIPTION . " pd 
+            $found_product = $db->Execute('SELECT p.products_id, p.products_model, p.master_categories_id, p.products_price_sorter, p.products_quantity,  pd.products_name,  m.manufacturers_name FROM ' . TABLE_PRODUCTS . ' p 
+                    LEFT JOIN ' . TABLE_MANUFACTURERS . ' m ON p.manufacturers_id = m.manufacturers_id, ' . TABLE_PRODUCTS_DESCRIPTION . ' pd 
                     WHERE p.products_id = pd.products_id 
-                    AND pd.language_id =  " . (int)$_SESSION['languages_id'] . ' 
+                    AND pd.language_id =  ' . (int)$_SESSION['languages_id'] . ' 
                     AND p.products_id = ' . $id . ' LIMIT 1');
 
             if ($found_product->RecordCount() === 1) {
@@ -432,7 +392,7 @@ FROM " . TABLE_PRODUCTS . " p
 
 // bof: delete specials
                 if ($copy_as === 'delete_specials') {
-                    $db->Execute("DELETE FROM " . TABLE_SPECIALS . " WHERE products_id = " . $id);
+                    $db->Execute('DELETE FROM ' . TABLE_SPECIALS . ' WHERE products_id = ' . $id);
                     $products_modified[] = [
                         'id' => (int)$found_product->fields['products_id'],
                         'model' => $found_product->fields['products_model'],
@@ -448,7 +408,7 @@ FROM " . TABLE_PRODUCTS . " p
 
 // bof: delete from one category. Linked products only
                 if ($_POST['copy_as'] === 'delete_linked') {
-                    $delete_sql = "DELETE FROM " . TABLE_PRODUCTS_TO_CATEGORIES . " WHERE products_id = " . $id . " AND categories_id = " . $categories_selected[$key];
+                    $delete_sql = 'DELETE FROM ' . TABLE_PRODUCTS_TO_CATEGORIES . ' WHERE products_id = ' . $id . ' AND categories_id = ' . $categories_selected[$key];
                     $db->Execute($delete_sql);
 
                     // check for master_categories_id and reset
@@ -472,7 +432,7 @@ FROM " . TABLE_PRODUCTS . " p
                     $delete_linked = 'true';
                     $product_type = zen_get_products_type($id); // for delete_product_confirm
 
-                    $chk_categories = $db->Execute("SELECT products_id, categories_id FROM " . TABLE_PRODUCTS_TO_CATEGORIES . " WHERE products_id = " . $id);
+                    $chk_categories = $db->Execute('SELECT products_id, categories_id FROM ' . TABLE_PRODUCTS_TO_CATEGORIES . ' WHERE products_id = ' . $id);
                     $product_categories = [];
                     foreach ($chk_categories as $chk_category) {
                         $product_categories[] = $chk_category['categories_id'];
@@ -659,7 +619,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                     </div>
                     <div>
                         <?php $manufacturers_array = [['id' => '0', 'text' => TEXT_ALL_MANUFACTURERS]];
-                        $manufacturers_query = $db->Execute("SELECT manufacturers_id, manufacturers_name FROM " . TABLE_MANUFACTURERS . " ORDER BY manufacturers_name");
+                        $manufacturers_query = $db->Execute('SELECT manufacturers_id, manufacturers_name FROM ' . TABLE_MANUFACTURERS . ' ORDER BY manufacturers_name');
                         foreach ($manufacturers_query as $manufacturer) {
                             $manufacturers_array[] = [
                                 'id' => $manufacturer['manufacturers_id'],
@@ -959,7 +919,9 @@ require(DIR_WS_INCLUDES . 'header.php');
             }
             ?>
             <button type="submit" class="btn btn-primary"><?php echo BUTTON_RETRY; ?></button>
+            <?php if (!$delete_option) { ?>
             <a href="<?php echo zen_href_link(FILENAME_CATEGORY_PRODUCT_LISTING, 'cPath=' . $target_category_id) ?>" class="btn btn-default" role="button"><?php echo BUTTON_CATEGORY_LISTING_TARGET; ?></a>
+            <?php } ?>
             <?php if ($search_category_id > 0) { // only show if a Search Category was specified ?>
                 <a href="<?php echo zen_href_link(FILENAME_CATEGORY_PRODUCT_LISTING, 'cPath=' . $search_category_id) ?>" class="btn btn-default" role="button"><?php echo BUTTON_CATEGORY_LISTING_SEARCH; ?></a>
             <?php } ?>
@@ -968,8 +930,7 @@ require(DIR_WS_INCLUDES . 'header.php');
 
         <?php
     } elseif ($action === 'confirm' || $action === 'multiple_product_copy_return') { //results
-
-        // steve not needed if ($copy_as === 'link' || $copy_as === 'duplicate' || $copy_as === 'move' || $copy_as === 'delete_specials') { ?>
+?>
         <div>
             <table class="table">
                 <thead>
@@ -992,7 +953,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                         <td class="dataTableContent"><?php echo $product_modified['name']; ?></td>
                         <td class="dataTableContent text-center"><?php
                             if (is_array($product_modified['category'])) { //only with delete all
-                                echo implode(", ", $product_modified['category']);
+                                echo implode(', ', $product_modified['category']);
                             } else {
                                 echo zen_output_generated_category_path((int)$product_modified['category']) . '<br>ID#' . $product_modified['category'];
                             } ?></td>
@@ -1005,13 +966,14 @@ require(DIR_WS_INCLUDES . 'header.php');
                 </tbody>
             </table>
         </div>
-        <?php //steve not needed } ?>
         <div>
             <?php echo zen_draw_form('multi_product_copy', FILENAME_MULTIPLE_PRODUCT_COPY); ?>
             <button type="submit" class="btn btn-primary"><?php echo BUTTON_NEW_SEARCH; ?></button>
             <?php echo "</form>\n"; ?>
 
+            <?php if (!$delete_option) { ?>
             <a href="<?php echo zen_href_link(FILENAME_CATEGORY_PRODUCT_LISTING, 'cPath=' . $target_category_id) ?>" class="btn btn-default" role="button"><?php echo BUTTON_CATEGORY_LISTING_TARGET; ?></a>
+            <?php } ?>
             <?php if ($search_category_id > 0) { // only show if a Search Category was specified ?>
                 <a href="<?php echo zen_href_link(FILENAME_CATEGORY_PRODUCT_LISTING, 'cPath=' . $search_category_id) ?>" class="btn btn-default" role="button"><?php echo BUTTON_CATEGORY_LISTING_SEARCH; ?></a>
             <?php } ?>
