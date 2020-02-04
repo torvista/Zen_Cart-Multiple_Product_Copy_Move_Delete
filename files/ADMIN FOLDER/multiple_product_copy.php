@@ -152,21 +152,16 @@ if ($action === 'find' || $action === 'confirm') { // validate form values from 
 
 switch ($action) {
     case 'find':
-        /* $search_sql = "SELECT p.products_id, p.manufacturers_id, p.master_categories_id, p.products_image, p.products_model, p.products_price_sorter, p.products_quantity, p.products_status, pd.products_name, pd.products_description, m.manufacturers_name, ptoc.categories_id FROM " . TABLE_PRODUCTS . " p
-             LEFT JOIN " . TABLE_MANUFACTURERS . " m ON p.manufacturers_id = m.manufacturers_id, " . TABLE_PRODUCTS_DESCRIPTION . " pd, " . TABLE_PRODUCTS_TO_CATEGORIES . " ptoc
-             WHERE p.products_id = pd.products_id
-             AND p.products_id = ptoc.products_id
-             AND pd.language_id =  " . (int)$_SESSION['languages_id'];
- */
-        $search_sql = "SELECT p.products_id, p.manufacturers_id, p.master_categories_id, p.products_image, p.products_model, p.products_price_sorter, p.products_quantity, p.products_status, pd.products_name, pd.products_description, m.manufacturers_name, ptoc.categories_id, sp.specials_id
-FROM " . TABLE_PRODUCTS . " p 
-            LEFT JOIN " . TABLE_MANUFACTURERS . " m ON p.manufacturers_id = m.manufacturers_id 
-            LEFT JOIN " . TABLE_SPECIALS . " sp ON p.products_id = sp.products_id, " .
-            TABLE_PRODUCTS_DESCRIPTION . " pd, " .
-            TABLE_PRODUCTS_TO_CATEGORIES . " ptoc
+
+        $search_sql = 'SELECT p.products_id, p.manufacturers_id, p.master_categories_id, p.products_image, p.products_model, p.products_price_sorter, p.products_quantity, p.products_status, pd.products_name, pd.products_description, m.manufacturers_name, ptoc.categories_id, sp.specials_id
+FROM ' . TABLE_PRODUCTS . ' p 
+            LEFT JOIN ' . TABLE_MANUFACTURERS . ' m ON p.manufacturers_id = m.manufacturers_id 
+            LEFT JOIN ' . TABLE_SPECIALS . ' sp ON p.products_id = sp.products_id, ' .
+            TABLE_PRODUCTS_DESCRIPTION . ' pd, ' .
+            TABLE_PRODUCTS_TO_CATEGORIES . ' ptoc
             WHERE p.products_id = pd.products_id 
             AND p.products_id = ptoc.products_id 
-            AND pd.language_id =  " . (int)$_SESSION['languages_id'];
+            AND pd.language_id =  ' . (int)$_SESSION['languages_id'];
 
         if ($copy_as === 'delete_specials') {
             $search_sql .= ' AND p.products_id = sp.products_id';
@@ -183,6 +178,7 @@ FROM " . TABLE_PRODUCTS . " p
         if ($search_category_id > 0) { // 0=all
             if ($inc_subcats) { // Delete only
                 $subcats_array = zen_get_category_tree($search_category_id, '', '0');
+                $subcats = '';
                 foreach ($subcats_array as $key => $value) {
                     $subcats .= ',' . $value['id'];
                 }
@@ -203,14 +199,14 @@ FROM " . TABLE_PRODUCTS . " p
 
         $where_str = '';
         if (isset($search_keywords) && (count($search_keywords) > 0)) {
-            $where_str .= " AND (";
+            $where_str .= ' AND (';
             for ($i = 0, $n = count($search_keywords); $i < $n; $i++) {
                 switch ($search_keywords[$i]) {
                     case '(':
                     case ')':
                     case 'and':
                     case 'or':
-                        $where_str .= " " . $search_keywords[$i] . " ";
+                        $where_str .= ' ' . $search_keywords[$i] . ' ';
                         break;
                     default:
                         $keyword = zen_db_prepare_input($search_keywords[$i]);
@@ -222,7 +218,7 @@ FROM " . TABLE_PRODUCTS . " p
                         break;
                 }
             }
-            $where_str .= " )";
+            $where_str .= ' )';
         }
 
         switch ($results_order_by) {
@@ -313,21 +309,22 @@ FROM " . TABLE_PRODUCTS . " p
                     $dup_products_id = !empty($dup_products_id) ? $dup_products_id : 0; // $dup_products_id is the new product id created by the previous module, is integer. This check added to satisfy IDE
                     if ($dup_products_id > 0) {
                         if ($copy_specials === 'copy_specials_yes') {
-                            $chk_specials = $db->Execute("SELECT * FROM " . TABLE_SPECIALS . " WHERE products_id= " . (int)$id);
+                            $chk_specials = $db->Execute('SELECT * FROM ' . TABLE_SPECIALS . ' WHERE products_id= ' . (int)$id);
                             foreach ($chk_specials as $row) {
-                                $db->Execute("INSERT INTO " . TABLE_SPECIALS . " 
-                                        (products_id, specials_new_products_price, specials_date_added, expires_date, status, specials_date_available) VALUES 
-                                        (" . $dup_products_id . ", '" . zen_db_input($row['specials_new_products_price']) . "', now(), '" . zen_db_input($row['expires_date']) . "', '1', '" . zen_db_input($row['specials_date_available']) . "')");
+                                $db->Execute('INSERT INTO ' . TABLE_SPECIALS . ' 
+                                        (products_id, specials_new_products_price, specials_date_added, expires_date, status, specials_date_available) 
+                                        VALUES 
+                                        (' . $dup_products_id . ", '" . zen_db_input($row['specials_new_products_price']) . "', now(), '" . zen_db_input($row['expires_date']) . "', '1', '" . zen_db_input($row['specials_date_available']) . "')");
                                 $messageStack->add(sprintf(TEXT_COPY_AS_DUPLICATE_SPECIALS, $id, $dup_products_id), 'success');
                             }
                         }
 
                         if ($copy_featured === 'copy_featured_yes') {
-                            $chk_featured = $db->Execute("SELECT * FROM " . TABLE_FEATURED . " WHERE products_id= " . (int)$id);
+                            $chk_featured = $db->Execute('SELECT * FROM ' . TABLE_FEATURED . ' WHERE products_id= ' . (int)$id);
                             foreach ($chk_featured as $row) {
-                                $db->Execute("INSERT INTO " . TABLE_FEATURED . " 
+                                $db->Execute('INSERT INTO ' . TABLE_FEATURED . ' 
                                         (products_id, featured_date_added, expires_date, status, featured_date_available) VALUES 
-                                        (" . $dup_products_id . ", now(), '" . zen_db_input($row['expires_date']) . "', '1', '" . zen_db_input($row['featured_date_available']) . "')");
+                                        (' . $dup_products_id . ", now(), '" . zen_db_input($row['expires_date']) . "', '1', '" . zen_db_input($row['featured_date_available']) . "')");
 
                                 $messageStack->add(sprintf(TEXT_COPY_AS_DUPLICATE_FEATURED, $id, $dup_products_id), 'success');
                             }

@@ -34,7 +34,7 @@ define('TEXT_COPY_AS_DELETE_ALL_INFO', 'This option allows the multiple permanen
 // Search Criteria
 define('TEXT_ENTER_CRITERIA', 'Search/Filter Criteria:');
 define('TEXT_PRODUCTS_CATEGORY', 'Search in Category:');
-define('TEXT_INCLUDE_SUBCATS', ' include subcategories (only used for <em>deleting</em> products)');
+define('TEXT_INCLUDE_SUBCATS', ' include subcategories');
 define('TEXT_ENTER_SEARCH_KEYWORDS', 'Find products containing the following keywords (in product\'s Model, Name and Manufacturer name) ');
 define('TEXT_SEARCH_DESCRIPTIONS', 'Also search in product Descriptions ');
 define('TEXT_PRODUCTS_MANUFACTURER', 'Manufacturer ');
