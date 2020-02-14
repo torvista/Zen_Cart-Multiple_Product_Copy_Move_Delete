@@ -152,7 +152,6 @@ if ($action === 'find' || $action === 'confirm') { // validate form values from 
 
 switch ($action) {
     case 'find':
-
         $search_sql = 'SELECT p.products_id, p.manufacturers_id, p.master_categories_id, p.products_image, p.products_model, p.products_price_sorter, p.products_quantity, p.products_status, pd.products_name, pd.products_description, m.manufacturers_name, ptoc.categories_id, sp.specials_id
 FROM ' . TABLE_PRODUCTS . ' p 
             LEFT JOIN ' . TABLE_MANUFACTURERS . ' m ON p.manufacturers_id = m.manufacturers_id 
