@@ -4,15 +4,15 @@ Based on
 https://www.zen-cart.com/showthread.php?180447-Multiple-Products-(Copy-Move-Delete)
 
 -----------------------------
-2020 20 Current Status: tested on php 7.3.11 with Zen Cart 1.5.7
+
+2020 02 28 Current Status: tested on php 7.3.11 with Zen Cart 1.5.7
 NOTE: Copy-Duplicate of meta-tags requires the ZC157 version of /modules/products_copy_confirm.php
 
-Many debug comments are left in while this is community-tested.
 USE AT OWN RISK - TEST THOROUGHLY ON YOUR DEVELOPMENT SERVER
 
 Please report all bugs on Github.
 
-The plan is to clean this up and submit as a core file for Zen Cart 1.5.7...
+The plan is to submit as a core file for Zen Cart 1.5.7...
 
 -----------------------------
 This utility allows you to perform multiple actions in one process.
@@ -90,7 +90,7 @@ b) Copy, paste and run the uninstall SQL in the Admin->SQLpatch tool or phpMyAdm
 
 ---------------------
 Changelog
-
+2020 02 28 torvista: bugfix to allow language selector dropdown
 2020 01 torvista: complete revision
 remove table layout
 conversion to html with embedded php

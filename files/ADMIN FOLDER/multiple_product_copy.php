@@ -1,4 +1,3 @@
-<?php
 /**
  * @package admin
  * @copyright Copyright 2003-2010 Zen Cart Development Team
@@ -11,7 +10,7 @@ require('includes/application_top.php');
 require(DIR_WS_CLASSES . 'currencies.php');
 $currencies = new currencies();
 
-$action = !empty($_GET['action']) ? $_GET['action'] : 'new'; // initial page load: set default action to "new" to show search form
+$action = !empty($_GET['action']) ? $_GET['action'] : ''; // initial page load: set default action to '' to show search form (when $action is set, language selection dropdown is hidden)
 
 $copy_options = ['link', 'duplicate', 'move']; // allowed Copy/Move options
 $delete_options = ['delete_specials', 'delete_linked', 'delete_all']; // allowed Delete options
@@ -99,7 +98,7 @@ if ($action === 'find' || $action === 'confirm') { // validate form values from 
 
     if ($error_message !== '') {
         $messageStack->add($error_message);
-        $action = 'new';
+        $action = '';
     } elseif (!$delete_option) { // build a list of the products already in the target category, not for Delete. This is used in both 'find' and 'confirm'.
         $check = $db->Execute('SELECT products_id FROM ' . TABLE_PRODUCTS_TO_CATEGORIES . ' WHERE categories_id = ' . $target_category_id);
         $products_in_target_category = [];
@@ -247,7 +246,7 @@ FROM ' . TABLE_PRODUCTS . ' p
         $search_results = $db->Execute($search_sql);
 
         if ($search_results->EOF) {
-            $action = 'new';
+            $action = '';
             $messageStack->add(TEXT_NO_MATCHING_PRODUCTS_FOUND, 'info');
         }
         break;
@@ -501,7 +500,7 @@ require(DIR_WS_INCLUDES . 'header.php');
 <div class="container-fluid">
     <!-- body_text //-->
     <h1><?php echo HEADING_TITLE; ?></h1>
-    <?php if ($action === 'new') { // initial page load $action is pre-set to "new"
+    <?php if ($action === '') {
         $target_categories = zen_get_category_tree('0', '', '', [['id' => '', 'text' => PLEASE_SELECT]], '', true); ?>
         <div>
             <?php
