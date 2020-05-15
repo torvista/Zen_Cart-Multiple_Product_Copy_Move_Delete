@@ -90,6 +90,7 @@ b) Copy, paste and run the uninstall SQL in the Admin->SQLpatch tool or phpMyAdm
 
 ---------------------
 Changelog
+2020 05 15 torvista: update of main file and removal of extra functions
 2020 02 28 torvista: bugfix to allow language selector dropdown
 2020 01 torvista: complete revision
 remove table layout

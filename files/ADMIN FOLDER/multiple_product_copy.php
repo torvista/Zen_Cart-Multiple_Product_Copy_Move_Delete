@@ -4,6 +4,7 @@
  * @copyright Copyright 2003-2010 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
+ * @version $Id: torvista Apr 21 2020 New in v1.5.7 $
  */
 
 require('includes/application_top.php');
@@ -11,8 +12,183 @@ require('includes/application_top.php');
 require(DIR_WS_CLASSES . 'currencies.php');
 $currencies = new currencies();
 
-$action = !empty($_GET['action']) ? $_GET['action'] : ''; // initial page load: set default action to '' to show search form (when $action is set, language selection dropdown is hidden)
+//////////////////////////////////////////////
+//File-specific functions
+function zen_get_manufacturers_name($manufacturers_id)
+{
+    global $db;
+    $manufacturer = $db->Execute("select manufacturers_name
+                                  from " . TABLE_MANUFACTURERS . "
+                                  where manufacturers_id = " . (int)$manufacturers_id . " LIMIT 1");
+    if ($manufacturer->EOF) {
+        return '';
+    }
+    return $manufacturer->fields['manufacturers_name'];
+}
 
+//Copied from Catalog functions but with required parameter first
+// Parse search string into individual objects
+/**
+ * @param $objects
+ * @param string $search_str
+ * @return bool
+ */
+function zen_parse_search_string(&$objects, $search_str = '')
+{
+    $search_str = strtolower(trim($search_str));
+
+// Break up $search_str on whitespace; quoted string will be reconstructed later
+    $pieces = preg_split('/[[:space:]]+/', $search_str);
+    $objects = array();
+    $tmpstring = '';
+    $flag = '';
+
+    for ($k = 0; $k < count($pieces); $k++) {
+        while (substr($pieces[$k], 0, 1) == '(') {
+            $objects[] = '(';
+            if (strlen($pieces[$k]) > 1) {
+                $pieces[$k] = substr($pieces[$k], 1);
+            } else {
+                $pieces[$k] = '';
+            }
+        }
+
+        $post_objects = array();
+
+        while (substr($pieces[$k], -1) == ')') {
+            $post_objects[] = ')';
+            if (strlen($pieces[$k]) > 1) {
+                $pieces[$k] = substr($pieces[$k], 0, -1);
+            } else {
+                $pieces[$k] = '';
+            }
+        }
+
+// Check individual words
+
+        if ((substr($pieces[$k], -1) != '"') && (substr($pieces[$k], 0, 1) != '"')) {
+            $objects[] = trim($pieces[$k]);
+
+            for ($j = 0, $n = count($post_objects); $j < $n; $j++) {
+                $objects[] = $post_objects[$j];
+            }
+        } else {
+            /* This means that the $piece is either the beginning or the end of a string.
+               So, we'll slurp up the $pieces and stick them together until we get to the
+               end of the string or run out of pieces.
+            */
+
+// Add this word to the $tmpstring, starting the $tmpstring
+            $tmpstring = trim(preg_replace('/"/', ' ', $pieces[$k]));
+
+// Check for one possible exception to the rule. That there is a single quoted word.
+            if (substr($pieces[$k], -1) == '"') {
+// Turn the flag off for future iterations
+                $flag = 'off';
+
+                $objects[] = trim($pieces[$k]);
+
+                for ($j = 0, $n = count($post_objects); $j < $n; $j++) {
+                    $objects[] = $post_objects[$j];
+                }
+
+                unset($tmpstring);
+
+// Stop looking for the end of the string and move onto the next word.
+                continue;
+            }
+
+// Otherwise, turn on the flag to indicate no quotes have been found attached to this word in the string.
+            $flag = 'on';
+
+// Move on to the next word
+            $k++;
+
+// Keep reading until the end of the string as long as the $flag is on
+
+            while (($flag == 'on') && ($k < count($pieces))) {
+                while (substr($pieces[$k], -1) == ')') {
+                    $post_objects[] = ')';
+                    if (strlen($pieces[$k]) > 1) {
+                        $pieces[$k] = substr($pieces[$k], 0, -1);
+                    } else {
+                        $pieces[$k] = '';
+                    }
+                }
+
+// If the word doesn't end in double quotes, append it to the $tmpstring.
+                if (substr($pieces[$k], -1) != '"') {
+// Tack this word onto the current string entity
+                    $tmpstring .= ' ' . $pieces[$k];
+
+// Move on to the next word
+                    $k++;
+                    continue;
+                } else {
+                    /* If the $piece ends in double quotes, strip the double quotes, tack the
+                       $piece onto the tail of the string, push the $tmpstring onto the $haves,
+                       kill the $tmpstring, turn the $flag "off", and return.
+                    */
+                    $tmpstring .= ' ' . trim(preg_replace('/"/', ' ', $pieces[$k]));
+
+// Push the $tmpstring onto the array of stuff to search for
+                    $objects[] = trim($tmpstring);
+
+                    for ($j = 0, $n = count($post_objects); $j < $n; $j++) {
+                        $objects[] = $post_objects[$j];
+                    }
+
+                    unset($tmpstring);
+
+// Turn off the flag to exit the loop
+                    $flag = 'off';
+                }
+            }
+        }
+    }
+
+// add default logical operators if needed
+    $temp = array();
+    for ($i = 0; $i < (count($objects) - 1); $i++) {
+        $temp[] = $objects[$i];
+        if (($objects[$i] != 'and') &&
+            ($objects[$i] != 'or') &&
+            ($objects[$i] != '(') &&
+            ($objects[$i + 1] != 'and') &&
+            ($objects[$i + 1] != 'or') &&
+            ($objects[$i + 1] != ')')) {
+            $temp[] = ADVANCED_SEARCH_DEFAULT_OPERATOR;
+        }
+    }
+    $temp[] = $objects[$i];
+    $objects = $temp;
+
+    $keyword_count = 0;
+    $operator_count = 0;
+    $balance = 0;
+    for ($i = 0; $i < count($objects); $i++) {
+        if ($objects[$i] == '(') {
+            $balance--;
+        }
+        if ($objects[$i] == ')') {
+            $balance++;
+        }
+        if (($objects[$i] == 'and') || ($objects[$i] == 'or')) {
+            $operator_count++;
+        } elseif ((is_string($objects[$i]) && $objects[$i] == '0') || ($objects[$i]) && ($objects[$i] != '(') && ($objects[$i] != ')')) {
+            $keyword_count++;
+        }
+    }
+
+    if (($operator_count < $keyword_count) && ($balance == 0)) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+/////////////////////////////////////////////////////////////
+$action = !empty($_GET['action']) ? $_GET['action'] : ''; // initial page load: set default action to '' to show search form (when $action is set, language selection dropdown is hidden)
 $copy_options = ['link', 'duplicate', 'move']; // allowed Copy/Move options
 $delete_options = ['delete_specials', 'delete_linked', 'delete_all']; // allowed Delete options
 
@@ -403,7 +579,7 @@ FROM ' . TABLE_PRODUCTS . ' p
 // bof: delete specials
 
 // bof: delete from one category. Linked products only
-                if ($_POST['copy_as'] === 'delete_linked') {
+                if ($copy_as === 'delete_linked') {
                     $delete_sql = 'DELETE FROM ' . TABLE_PRODUCTS_TO_CATEGORIES . ' WHERE products_id = ' . $id . ' AND categories_id = ' . $categories_selected[$key];
                     $db->Execute($delete_sql);
 
@@ -422,7 +598,7 @@ FROM ' . TABLE_PRODUCTS . ' p
 // eof: delete from one category. Linked products only
 
 // bof: delete from all categories
-                if ($_POST['copy_as'] === 'delete_all') { //if product found
+                if ($copy_as === 'delete_all') { //if product found
                     $action = 'multiple_product_copy_return';
                     $_POST['products_id'] = $id; // for delete_product_confirm
                     $delete_linked = 'true';
@@ -650,7 +826,7 @@ require(DIR_WS_INCLUDES . 'header.php');
             <?php echo zen_draw_separator('pixel_black.gif', '100%', '1'); ?><br>
             <div><?php echo TEXT_TIPS; ?></div>
         </div>
-    <?php } elseif ($action === 'find' || $action === 'confirm' || $action === 'multiple_product_copy_return') { // anything except "new" ?>
+    <?php } elseif ($action === 'find' || $action === 'confirm' || $action === 'multiple_product_copy_return') { ?>
         <div>
             <?php // bof capture Search Criteria parameters for reuse
             ob_start(); ?>
@@ -746,7 +922,6 @@ require(DIR_WS_INCLUDES . 'header.php');
                     <h2><?php echo TEXT_MOVE_TO; ?></h2>
                     <h3><?php echo sprintf(TEXT_SEARCH_RESULT_TARGET, $target_category_id, zen_output_generated_category_path($target_category_id)); ?></h3>
                     <?php echo $search_criteria;
-                    echo($search_category_id > 0 ? TEXT_MOVE_PRODUCTS_INFO_SEARCH_CATEGORY : TEXT_MOVE_PRODUCTS_INFO_SEARCH_GLOBAL);
                     if ($action === 'confirm' || $action === 'multiple_product_copy_return') { ?>
                         <h4><?php echo sprintf(TEXT_PRODUCTS_COPIED_TO, count($products_modified), $target_category_id, zen_output_generated_category_path($target_category_id)); ?></h4>
                     <?php }
@@ -770,11 +945,12 @@ require(DIR_WS_INCLUDES . 'header.php');
 
                 case ('delete_all'): ?>
                     <h2><?php echo TEXT_COPY_AS_DELETE_ALL; ?></h2>
-                    <h2><?php echo TEXT_COPY_AS_DELETE_ALL_INFO; ?></h2>
                     <?php echo $search_criteria;
                     if ($action === 'confirm') { ?>
                         <h4><?php echo sprintf(TEXT_PRODUCTS_DELETED, count($products_modified)); ?></h4>
-                    <?php }
+                    <?php } else {
+                        echo '$action=' . $action;
+                    }
                     break;
 
                 default:
@@ -905,9 +1081,8 @@ require(DIR_WS_INCLUDES . 'header.php');
             } else { // no matching products were found ?>
                 <h4><?php echo TEXT_NO_MATCHING_PRODUCTS_FOUND; ?></h4>
             <?php }
-            echo zen_draw_form('retry', FILENAME_MULTIPLE_PRODUCT_COPY, 'action=new');
+            echo zen_draw_form('retry', FILENAME_MULTIPLE_PRODUCT_COPY);
             /* Re-Post all POST'ed variables */
-            //$key = '';//keep phpstorm EA inspection happy
             foreach ($_POST as $key => $value) {
                 if (!is_array($_POST[$key])) {
                     echo zen_draw_hidden_field($key, htmlspecialchars(stripslashes($value), ENT_COMPAT, CHARSET));
@@ -916,7 +1091,7 @@ require(DIR_WS_INCLUDES . 'header.php');
             ?>
             <button type="submit" class="btn btn-primary"><?php echo BUTTON_RETRY; ?></button>
             <?php if (!$delete_option) { ?>
-            <a href="<?php echo zen_href_link(FILENAME_CATEGORY_PRODUCT_LISTING, 'cPath=' . $target_category_id) ?>" class="btn btn-default" role="button"><?php echo BUTTON_CATEGORY_LISTING_TARGET; ?></a>
+                <a href="<?php echo zen_href_link(FILENAME_CATEGORY_PRODUCT_LISTING, 'cPath=' . $target_category_id) ?>" class="btn btn-default" role="button"><?php echo BUTTON_CATEGORY_LISTING_TARGET; ?></a>
             <?php } ?>
             <?php if ($search_category_id > 0) { // only show if a Search Category was specified ?>
                 <a href="<?php echo zen_href_link(FILENAME_CATEGORY_PRODUCT_LISTING, 'cPath=' . $search_category_id) ?>" class="btn btn-default" role="button"><?php echo BUTTON_CATEGORY_LISTING_SEARCH; ?></a>
@@ -926,7 +1101,7 @@ require(DIR_WS_INCLUDES . 'header.php');
 
         <?php
     } elseif ($action === 'confirm' || $action === 'multiple_product_copy_return') { //results
-?>
+        ?>
         <div>
             <table class="table">
                 <thead>
@@ -968,7 +1143,7 @@ require(DIR_WS_INCLUDES . 'header.php');
             <?php echo "</form>\n"; ?>
 
             <?php if (!$delete_option) { ?>
-            <a href="<?php echo zen_href_link(FILENAME_CATEGORY_PRODUCT_LISTING, 'cPath=' . $target_category_id) ?>" class="btn btn-default" role="button"><?php echo BUTTON_CATEGORY_LISTING_TARGET; ?></a>
+                <a href="<?php echo zen_href_link(FILENAME_CATEGORY_PRODUCT_LISTING, 'cPath=' . $target_category_id) ?>" class="btn btn-default" role="button"><?php echo BUTTON_CATEGORY_LISTING_TARGET; ?></a>
             <?php } ?>
             <?php if ($search_category_id > 0) { // only show if a Search Category was specified ?>
                 <a href="<?php echo zen_href_link(FILENAME_CATEGORY_PRODUCT_LISTING, 'cPath=' . $search_category_id) ?>" class="btn btn-default" role="button"><?php echo BUTTON_CATEGORY_LISTING_SEARCH; ?></a>
