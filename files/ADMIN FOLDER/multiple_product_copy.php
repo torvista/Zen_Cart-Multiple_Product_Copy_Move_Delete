@@ -8,7 +8,40 @@
  */
 
 require('includes/application_top.php');
-
+///////////////////////////////////////////////////////
+//temporary debugging code: to be removed if ever this gets into core code....along with the various debugging echo's
+/**steve for phpStorm inspections
+ * @array $_SESSION['messageToStack']
+ * @var messageStack $messageStack
+ * @var zcObserverLogEventListener $zco_notifier
+ * @var products $zc_products
+ */
+$debug_mpc = false;
+if ($debug_mpc) {//steve debug
+    ob_start();
+    if (!function_exists('mv_printVar')) {
+        function mv_printVar($a)
+        {
+            $backtrace = debug_backtrace()[0];
+            $fh = fopen($backtrace['file'], 'rb');
+            $line = 0;
+            $code = '';
+            while (++$line <= $backtrace['line']) {
+                $code = fgets($fh);
+            }
+            fclose($fh);
+            preg_match('/' . __FUNCTION__ . '\s*\((.*)\)\s*;/u', $code, $name);
+            echo '<pre><strong>' . trim($name[1]) . ":</strong>\n";
+            print_r($a);
+            echo '</pre><br>';
+        }
+    }
+    mv_printVar($_POST);//steve debug
+    $output = ob_get_clean();//steve debug
+    $messageStack->add($output, 'info');//steve debug
+}
+//eof temporary debugging code
+///////////////////////////////////////////////////////////
 require(DIR_WS_CLASSES . 'currencies.php');
 $currencies = new currencies();
 
@@ -299,6 +332,11 @@ if ($action === 'find' || $action === 'confirm') { // validate form values from 
         $categories_selected = array_map(static function ($value) { // make array (integers) of category IDs of products as selected on Preview page 2. For Delete One
             return (int)$value;
         }, $_POST['category']);
+        if ($debug_mpc) {//steve
+            echo __LINE__;
+            mv_printVar($products_selected);
+            mv_printVar($categories_selected);
+        }
 
         switch (true) {
             case ($cnt !== count($found)): // should never happen!
@@ -421,7 +459,9 @@ FROM ' . TABLE_PRODUCTS . ' p
         }
         $search_sql .= $where_str . $order_by_str; // ORDER BY pd.products_name
         $search_results = $db->Execute($search_sql);
-
+        if ($debug_mpc) {//steve debug
+            $messageStack->add($search_sql, 'info');
+        }
         if ($search_results->EOF) {
             $action = '';
             $messageStack->add(TEXT_NO_MATCHING_PRODUCTS_FOUND, 'info');
@@ -430,12 +470,18 @@ FROM ' . TABLE_PRODUCTS . ' p
 
     case 'confirm':
         $products_modified = [];
+        if ($debug_mpc) {//steve
+            echo __LINE__ ;
+            mv_printVar($products_selected);
+            mv_printVar($categories_selected);
+        }
         foreach ($products_selected as $key => $id) { //$id is an integer
 
-            $found_product = $db->Execute('SELECT p.products_id, p.products_model, p.master_categories_id, p.products_price_sorter, p.products_quantity,  pd.products_name,  m.manufacturers_name FROM ' . TABLE_PRODUCTS . ' p 
+            $found_product = $db->Execute('SELECT p.products_id, p.products_model, p.master_categories_id, p.products_price_sorter, p.products_quantity,  pd.products_name,  m.manufacturers_name 
+                    FROM ' . TABLE_PRODUCTS . ' p 
                     LEFT JOIN ' . TABLE_MANUFACTURERS . ' m ON p.manufacturers_id = m.manufacturers_id, ' . TABLE_PRODUCTS_DESCRIPTION . ' pd 
                     WHERE p.products_id = pd.products_id 
-                    AND pd.language_id =  ' . (int)$_SESSION['languages_id'] . ' 
+                    AND pd.language_id = ' . (int)$_SESSION['languages_id'] . ' 
                     AND p.products_id = ' . $id . ' LIMIT 1');
 
             if ($found_product->RecordCount() === 1) {
@@ -527,15 +573,18 @@ FROM ' . TABLE_PRODUCTS . ' p
 
 // bof: move from one category to another
                 if ($copy_as === 'move') { //if product found
-                    $action = 'multiple_product_copy_return'; // used in move_product_confirm.php (core modification required) to bypass default redirect and so allow multiple moves
+                    $action = 'multiple_product_copy_return'; // used in move_product_confirm.php (core modification required) to prevent default redirect and so allow multiple moves
                     $_POST['products_id'] = $id; // for move_product_confirm
                     $_POST['move_to_category_id'] = $target_category_id;// for move_product_confirm
                     if ($search_category_id === 0) { // 0: search all categories: use the product's master category id as the search/source category
-                        $current_category_id = $found_product['master_categories_id'];// for move_product_confirm
+                        $current_category_id = $found_product['master_categories_id'];// $current_category_id used by move_product_confirm to reset master_category_id
                     } else { // a search category is set: the products therein may be linked or master
-                        $current_category_id = $search_category_id;// for move_product_confirm
+                        $current_category_id = $categories_selected[$key];
                     }
                     $product_type = zen_get_products_type($id);// for move_product_confirm
+                    if ($debug_mpc) {//steve
+                        echo __LINE__ . ': $_POST[\'products_id\']= ' . $_POST['products_id'] . ' | $product_type=' . $product_type . ' | $_POST[\'move_to_category_id\']= ' . $_POST['move_to_category_id'] . ' | $current_category_id=' . $current_category_id . '<br>';
+                    }
                     if (file_exists(DIR_WS_MODULES . $zc_products->get_handler($product_type) . '/move_product_confirm.php')) {
                         require(DIR_WS_MODULES . $zc_products->get_handler($product_type) . '/move_product_confirm.php');
                     } else {
