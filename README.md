@@ -12,7 +12,7 @@ USE AT OWN RISK - TEST THOROUGHLY ON YOUR DEVELOPMENT SERVER
 
 Please report all bugs on Github.
 
-The plan is to submit as a core file for Zen Cart 1.5.7...
+The plan is to be integrated into Zen Cart 1.5.8...
 
 -----------------------------
 This utility allows you to perform multiple actions in one process.
@@ -49,7 +49,7 @@ All are new files/no core files should be overwritten.
 
 The menu entry should be added to the Admin->Catalog section aut0matically.
 
-3) Required File Modifications: 2019 THIS SECTION IS UNDER REVIEW
+3) Required File Modifications:
 
 Multiple Product copy makes use of three core module files for copy and move. These files (normally) operate on one product/run once and then redirect to the category listing page.
 To allow them to be be run multiple times (for multiple copy/move) and return back to multiple_product_copy, a clause needs to be added around the redirect at the end of each file.
@@ -66,7 +66,6 @@ and change to read:
           zen_redirect(zen_href_link(FILENAME_CATEGORIES, 'cPath=' . $categories_id . '&pID=' . $products_id . (isset($_GET['page']) ? '&page=' . $_GET['page'] : '')));
         }
 // eof: change for multiple_product_copy
-
 
 Three modifications are required.
 
@@ -90,6 +89,7 @@ b) Copy, paste and run the uninstall SQL in the Admin->SQLpatch tool or phpMyAdm
 
 ---------------------
 Changelog
+2020 06 13 torvista: limitation of search results to not exceed php input_max_vars
 2020 05 15 torvista: update of main file and removal of extra functions
 2020 02 28 torvista: bugfix to allow language selector dropdown
 2020 01 torvista: complete revision
