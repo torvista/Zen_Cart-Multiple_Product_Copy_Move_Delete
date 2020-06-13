@@ -20,6 +20,9 @@ $debug_mpc = false;
 if ($debug_mpc) {//steve debug
     ob_start();
     if (!function_exists('mv_printVar')) {
+        /**
+         * @param $a
+         */
         function mv_printVar($a)
         {
             $backtrace = debug_backtrace()[0];
@@ -47,6 +50,10 @@ $currencies = new currencies();
 
 //////////////////////////////////////////////
 //File-specific functions
+/**
+ * @param $manufacturers_id
+ * @return mixed|string
+ */
 function zen_get_manufacturers_name($manufacturers_id)
 {
     global $db;
@@ -59,7 +66,7 @@ function zen_get_manufacturers_name($manufacturers_id)
     return $manufacturer->fields['manufacturers_name'];
 }
 
-//Copied from Catalog functions but with required parameter first
+//Copied from Catalog functions as is, but with required parameter first
 // Parse search string into individual objects
 /**
  * @param $objects
@@ -263,7 +270,8 @@ if (isset($_POST['search_category_id'])) {
 } else {
     $search_category_id = ''; // "Please Select"
 }
-
+$max_input_vars = ini_get("max_input_vars");
+$max_input_vars_limit = $max_input_vars / 2 - 10; //found by empirical tests
 $keywords = (isset($_POST['keywords']) ? zen_db_prepare_input($_POST['keywords']) : '');
 $search_all = isset($_POST['search_all']) && $_POST['search_all'] === '1'; // search filter in name, model or manufacturers only (name) or also descriptions (all)
 $manufacturer_id = isset($_POST['manufacturer_id']) ? (int)$_POST['manufacturer_id'] : 0; // '0' is Any Manufacturer, so an invalid string is set to 0
@@ -318,30 +326,36 @@ if ($action === 'find' || $action === 'confirm') { // validate form values from 
     }
 
     if ($action === 'confirm' && $error_message === '') { // perform additional validations prior to actual Copy/Move/Delete
-        $cnt = (int)$_POST['product_count']; // total of products as found by search / as listed on Preview (find) page
+        if (isset($_POST['product_count'])) {
+            $cnt = (int)$_POST['product_count']; // total of products as found by search / as listed on Preview (find) page
+            if ($debug_mpc) {//steve
+                echo __LINE__ . ': $cnt=' . $cnt . '<br>';
+            }
+            $found_string = explode(',', $_POST['items_found']); // make array of product ids as found by the search/displayed on Preview page 2
+            $found = array_map(static function ($value) { // make array of integers
+                return (int)$value;
+            }, $found_string);
 
-        $found_string = explode(',', $_POST['items_found']); // make array of product ids as found by the search/displayed on Preview page 2
-        $found = array_map(static function ($value) { // make array of integers
-            return (int)$value;
-        }, $found_string);
-        $products_selected = array_map(static function ($value) { // make array (integers) of product IDs as selected on Preview page 2
-            return (int)$value;
-        }, $_POST['product']);
+            $products_selected = array_map(static function ($value) { // make array (integers) of product IDs as selected on Preview page 2
+                return (int)$value;
+            }, $_POST['product']);
 
-        // for delete with subcats, need to know in which category was the selected linked product
-        $categories_selected = array_map(static function ($value) { // make array (integers) of category IDs of products as selected on Preview page 2. For Delete One
-            return (int)$value;
-        }, $_POST['category']);
-        if ($debug_mpc) {//steve
-            echo __LINE__;
-            mv_printVar($products_selected);
-            mv_printVar($categories_selected);
+            // for delete with subcats, need to know in which category was the selected linked product
+            $categories_selected = array_map(static function ($value) { // make array (integers) of category IDs of products as selected on Preview page 2. For Delete One
+                return (int)$value;
+            }, $_POST['category']);
+
+            if ($debug_mpc) {//steve
+                echo __LINE__;
+                mv_printVar($products_selected);
+                mv_printVar($categories_selected);
+            }
+
+        } else { // probably max_input_vars limit exceeded
+            $error_message = sprintf(ERROR_ARRAY_COUNTS, $max_input_vars);
         }
 
         switch (true) {
-            case ($cnt !== count($found)): // should never happen!
-                $error_message = ERROR_ARRAY_COUNTS;
-                break;
             case (count($products_selected) === 0): // no checkboxes selected
                 $error_message = ERROR_NO_SELECTION;
                 break;
@@ -457,7 +471,8 @@ FROM ' . TABLE_PRODUCTS . ' p
                 $order_by_str = ' ORDER BY p.products_status';
                 break;
         }
-        $search_sql .= $where_str . $order_by_str; // ORDER BY pd.products_name
+        $limit = ' LIMIT ' . $max_input_vars_limit; //product results + category results + 10 more
+        $search_sql .= $where_str . $order_by_str . $limit;
         $search_results = $db->Execute($search_sql);
         if ($debug_mpc) {//steve debug
             $messageStack->add($search_sql, 'info');
@@ -471,7 +486,7 @@ FROM ' . TABLE_PRODUCTS . ' p
     case 'confirm':
         $products_modified = [];
         if ($debug_mpc) {//steve
-            echo __LINE__ ;
+            echo __LINE__;
             mv_printVar($products_selected);
             mv_printVar($categories_selected);
         }
@@ -1011,7 +1026,7 @@ require(DIR_WS_INCLUDES . 'header.php');
         <div>
             <?php echo zen_draw_form('select_products', FILENAME_MULTIPLE_PRODUCT_COPY, 'action=confirm');
             /* Re-Post all POST'ed variables */
-            $key = '';//keep phpstorm EA inspection happy
+            $key = '';//initialise variable to keep phpstorm EA inspection happy
             foreach ($_POST as $key => $value) {
                 if (!is_array($_POST[$key])) {
                     echo zen_draw_hidden_field($key, htmlspecialchars(stripslashes($value), ENT_COMPAT, CHARSET));
@@ -1019,10 +1034,14 @@ require(DIR_WS_INCLUDES . 'header.php');
             }
             $total_products_found = count($search_results);
             if ($total_products_found > 0) { ?>
-                <p><?php echo sprintf(TEXT_PRODUCTS_FOUND, $total_products_found); ?>
-                    <?php if (!$delete_option) { // not for Delete ?>
-                        <?php echo ' ' . TEXT_EXISTING_PRODUCTS_NOT_SHOWN; ?>
-                    <?php } ?></p>
+                <?php echo '<p>' . sprintf(TEXT_PRODUCTS_FOUND, $total_products_found) . '</p>';
+
+                if ($total_products_found >= $max_input_vars_limit) { //warning when in excess of POST limit
+                    echo '<p class="messageStackError">' . sprintf(WARNING_MAX_INPUT_VARS_LIMIT, $total_products_found, $max_input_vars) . '</p>';
+                }
+                if (!$delete_option) { // not for Delete
+                    echo ' ' . TEXT_EXISTING_PRODUCTS_NOT_SHOWN;
+                } ?>
                 <table class="table table-striped">
                     <thead>
                     <tr class="dataTableHeadingRow">

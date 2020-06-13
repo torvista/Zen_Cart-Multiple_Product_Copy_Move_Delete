@@ -74,7 +74,7 @@ define('TEXT_TIPS', '<h2>Notes:</h2>
 
 //RESULTS page 2
 define('TEXT_PRODUCTS_FOUND', '%u matching product(s) found.');
-
+define('WARNING_MAX_INPUT_VARS_LIMIT', 'WARNING: search results have been limited to %1$u products. The PHP environment parameter "max_input_vars" (currently "%2$u") will need to be increased if you wish to select more products.');
 // Search Critera summary
 define('TEXT_SEARCH_RESULT_CATEGORY', 'Search category: %s');
 define('TEXT_SEARCH_RESULT_KEYWORDS', 'Search keywords: "%s"');
@@ -87,7 +87,10 @@ define('TEXT_EXISTING_PRODUCTS_NOT_SHOWN', 'Only matching products <strong>not a
 define('TABLE_HEADING_SELECT', 'Selected');
 define('TEXT_TOGGLE_ALL', 'toggle all');
 define('TABLE_HEADING_PRODUCTS_ID', 'ID');
-if (strpos(PROJECT_VERSION_MINOR, '5.7') === false) define('TABLE_HEADING_MODEL', 'Model');//remove for ZC157+: constant defined in english.php)
+//remove for ZC157+: constant defined in english.php)
+if (strpos(PROJECT_VERSION_MINOR, '5.7') === false) {
+    define('TABLE_HEADING_MODEL', 'Model');
+}
 define('TABLE_HEADING_IMAGE', 'Image');
 define('TABLE_HEADING_STATUS', 'Status');
 define('IMAGE_ICON_STATUS_ON_EDIT_PRODUCT', 'product is enabled -> Edit Product');
@@ -159,7 +162,7 @@ define('ERROR_OR_SUBS', ', or subcategories.');
 define('ERROR_INVALID_KEYWORDS', 'Invalid keywords');
 define('ERROR_NO_PRODUCTS_FOUND', 'No products found in "%2$s" ID#%1$u');
 define('ERROR_SEARCH_CRITERIA_REQUIRED', 'No Search critera set! Set a Search category / keyword / manufacturer / price field.');
-define('ERROR_ARRAY_COUNTS', 'Array of products found and array count not equal.');
+define('ERROR_ARRAY_COUNTS', 'The POST value for the total count of products selected from the search was not set. This was most likely due to the PHP limit max_input vars (currently %u) being insufficient for the products selected. This limit may be increased by your hosting and needs to be more than double the products selected.');
 define('ERROR_NO_SELECTION', 'No products selected. At least one product from the list must be selected!');
 define('ERROR_CHECKBOXES_NOT_ARRAY', 'Selected checkboxes not an array.');
 define('ERROR_CHECKBOX_ID', 'A selected checkbox references product ID#%u. This is not a found product ID!');
