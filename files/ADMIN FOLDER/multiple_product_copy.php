@@ -326,7 +326,7 @@ if ($action === 'find' || $action === 'confirm') { // validate form values from 
     }
 
     if ($action === 'confirm' && $error_message === '') { // perform additional validations prior to actual Copy/Move/Delete
-        if (isset($_POST['product_count'])) {
+        if (isset($_POST['product_count'], $_POST['product'])) {
             $cnt = (int)$_POST['product_count']; // total of products as found by search / as listed on Preview (find) page
             if ($debug_mpc) {//steve
                 echo __LINE__ . ': $cnt=' . $cnt . '<br>';
