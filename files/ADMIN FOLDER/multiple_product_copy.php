@@ -426,6 +426,8 @@ FROM ' . TABLE_PRODUCTS . ' p
 
         $where_str = '';
         if (isset($search_keywords) && (count($search_keywords) > 0)) {
+            $search_sql .= ' AND p.master_categories_id = ptoc.categories_id';//prevent master and their linked products being listed
+
             $where_str .= ' AND (';
             for ($i = 0, $n = count($search_keywords); $i < $n; $i++) {
                 switch ($search_keywords[$i]) {
