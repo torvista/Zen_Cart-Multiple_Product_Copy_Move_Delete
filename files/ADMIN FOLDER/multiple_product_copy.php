@@ -356,7 +356,7 @@ if ($action === 'find' || $action === 'confirm') { // validate form values from 
         }
 
         switch (true) {
-            case (count($products_selected) === 0): // no checkboxes selected
+            case (!isset($_POST['product'])): // no checkboxes selected
                 $error_message = ERROR_NO_SELECTION;
                 break;
             case (!is_array($products_selected)):  //array of checkboxes is not an array
