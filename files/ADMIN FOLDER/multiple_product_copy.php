@@ -1146,7 +1146,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                 <?php
                 echo zen_draw_hidden_field('items_found', implode(',', $items_found));
                 echo zen_draw_hidden_field('product_count', $cnt); ?>
-                <button type="submit" class="btn btn-danger"><?php echo IMAGE_CONFIRM; ?></button>
+                <button type="submit" class="btn btn-danger" id="submitConfirm"><?php echo IMAGE_CONFIRM; ?></button>
                 <?php echo "</form>\n";
             } else { // no matching products were found ?>
                 <h4><?php echo TEXT_NO_MATCHING_PRODUCTS_FOUND; ?></h4>
@@ -1229,6 +1229,22 @@ require(DIR_WS_INCLUDES . 'header.php');
     <?php require(DIR_WS_INCLUDES . 'footer.php'); ?>
 </div>
 <!-- footer_eof //-->
+<?php
+if ($action === 'find') { //disable Confirm button until a selection is made ?>
+    <script>
+        $(function(){
+            $("input[type='checkBox']").change(function(){
+                let len = $("input[type='checkBox']:checked").length;
+                if (len === 0)
+                    $("#submitConfirm").prop("disabled", true);
+                else
+                    $("#submitConfirm").removeAttr("disabled");
+            });
+            $("input[type='checkBox']").trigger('change');
+        });
+    </script>
+<?php }
+?>
 </body>
 </html>
 <?php require(DIR_WS_INCLUDES . 'application_bottom.php'); ?>
