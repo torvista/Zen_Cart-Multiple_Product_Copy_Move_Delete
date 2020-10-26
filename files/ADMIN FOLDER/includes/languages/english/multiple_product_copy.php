@@ -131,6 +131,9 @@ define('TEXT_PRODUCTS_COPIED_TO', '%1$u product(s) copied to Category "%3$s" ID#
 
 //Confirm Copy Duplicates
 //these four constants used in copy_product_confirm
+if (!defined('TEXT_DUPLICATE_IDENTIFIER')) {
+define('TEXT_DUPLICATE_IDENTIFIER', '[DUPLICATE]');
+}
 define('TEXT_COPY_AS_DUPLICATE_ATTRIBUTES', 'Attributes copied from Product ID#%1$u to duplicate Product ID#%2$u');
 define('TEXT_COPY_AS_DUPLICATE_METATAGS', 'Metatags for Language ID#%1$u copied from Product ID#%2$u to duplicate Product ID#%3$u');
 define('TEXT_COPY_AS_DUPLICATE_CATEGORIES', 'Linked Category ID#%1$u copied from Product ID#%2$u to duplicate Product ID#%3$u');
