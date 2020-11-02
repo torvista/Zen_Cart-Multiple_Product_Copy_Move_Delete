@@ -1,4 +1,4 @@
-<?php //mod: multiple product copy
+<?php //mod: multiple product copy. Based on ZC157
 
 /**
  * @package admin
