@@ -1,105 +1,96 @@
-# Zen-Cart_Multiple-Products-Copy-Move-Delete
+#Multiple Products-Copy-Move-Delete for Zen Cart
 
 Based on
 https://www.zen-cart.com/showthread.php?180447-Multiple-Products-(Copy-Move-Delete)
 
 -----------------------------
+2020 11 04 Current Status: tested on php 7.3.11 with Zen Cart 157a
 
-2020 02 28 Current Status: tested on php 7.3.11 with Zen Cart 1.5.7
-NOTE: Copy-Duplicate of meta-tags requires the ZC157 version of /modules/products_copy_confirm.php
-
-USE AT OWN RISK - TEST THOROUGHLY ON YOUR DEVELOPMENT SERVER
+USE AT OWN RISK - TEST THOROUGHLY ON YOUR DEVELOPMENT SERVER.
 
 Please report all bugs on Github.
 
-The plan is to be integrated into Zen Cart 1.5.8...
+The plan is for this to be integrated into Zen Cart 1.5.8...
 
 -----------------------------
 This utility allows you to perform multiple actions in one process.
 
-Copy (as linked or duplicate) multiple products from one category to another. 
-Delete multiple products. 
-Move multiple products.
+* Copy (as linked or duplicate) multiple products from one category to another
+* Delete multiple products
+* Move multiple products
 
-How to Use
-Choose the destination category from the list, and search for products to copy/delete by keyword, category, manufacturer or price. 
+##How to Use
+
+1. Choose an action.
+1. Choose a target/destination category (not for delete)
+1. Search for products to copy/delete by keyword, category, manufacturer or price.
 
 You will be presented with a list of products matching your search terms.
 Products that are already linked to the destination category will not be listed. 
 
 Look over the list and tick the boxes for any product that should be copied, (or uncheck the boxes of products that should not be copied if you had the utility automatically check the boxes for you). 
 
-Click the Confirm button and all of the checked products will be now linked as Linked (or Duplicated) products in the destination category and a list of products copied will be displayed. 
+Click the Confirm button and all the checked products will be now linked as Linked (or Duplicated) products in the destination category and a list of products copied will be displayed. 
 
 Clicking the "Return To Catalog Entry" button after the copy is done will open the destination category for review.
 
-Install
-DO NOT TEST ON YOUR PRODUCTION SERVER!!!!
-DO NOT TEST ON YOUR PRODUCTION SERVER!!!!
+##Installation
 DO NOT TEST ON YOUR PRODUCTION SERVER!!!!
 
-0) Remove the previous version of this mod as per that version's instructions.
+1. Remove any previous version of this mod as per that version's instructions.
 
-1) Copy the files in:
-/ADMIN FOLDER
-to YOUR admin directory.
+1. Copy the files in "ADMIN FOLDER" to YOUR admin directory.
 All are new files/no core files should be overwritten.
 
-2) Refresh the Admin screen.
+1. Refresh the Admin screen.
+The menu entry should be added to the Admin->Catalog section automatically.
+1. REQUIRED CORE FILE MODIFICATIONS
 
-The menu entry should be added to the Admin->Catalog section aut0matically.
+    Multiple Product copy makes use of two core module files for copy and move. These files are normally used for one product/ are only run once and then redirect to the category listing page.
 
-3) Required File Modifications:
+    To allow them to be run multiple times (for multiple copy/move) and to return back to the Multiple Product Copy results, a clause needs to be added around the redirect at the end of each file.
 
-Multiple Product copy makes use of three core module files for copy and move. These files (normally) operate on one product/run once and then redirect to the category listing page.
-To allow them to be be run multiple times (for multiple copy/move) and return back to multiple_product_copy, a clause needs to be added around the redirect at the end of each file.
+    The changes required are in these files, which you should have already copied to ADMIN/includes/modules
 
-For example:
-Locate the line at the bottom of the file:
+    /ADMIN FOLDER/includes/modules/copy_to_confirm.php_multiple_product_copy
+    /ADMIN FOLDER/includes/modules/move_product_confirm.php_multiple_product_copy
 
-        zen_redirect(zen_href_link(FILENAME_CATEGORIES, 'cPath=' . $categories_id . '&pID=' . $products_id . (isset($_GET['page']) ? '&page=' . $_GET['page'] : '')));
+    Compare each file to yours and merge the differences to yours.
 
-and change to read:
+    If you are using other custom files on your Product Types for the files:
+    copy_to_confirm.php
+    move_product_confirm.php
 
-// bof: change for multiple_product_copy
-        if ($action != 'multiple_product_copy_return') {
-          zen_redirect(zen_href_link(FILENAME_CATEGORIES, 'cPath=' . $categories_id . '&pID=' . $products_id . (isset($_GET['page']) ? '&page=' . $_GET['page'] : '')));
-        }
-// eof: change for multiple_product_copy
+    you will need to add the similar IF statement around the redirect on the last line of the file.
+   
+1. Uninstall
 
-Three modifications are required.
-
-You will find the examples of these changes in these files:
-/ADMIN FOLDER/includes/modules/copy_to_confirm.php_multiple_product_copy
-/ADMIN FOLDER/includes/modules/move_product_confirm.php_multiple_product_copy
-/ADMIN FOLDER/includes/modules/product_music/copy_to_confirm.php_multiple_product_copy
-
-Compare them to the core files and merge in the changes at the end of each file.
-
-If you are using other custom files on your Product Types for the files:
-copy_to_confirm.php
-move_product_confirm.php
-
-you will need to add the similar IF statement around the redirect on the last line of the file. 
-
-4) Uninstall
 a) Use the backup you kept of this installation fileset to compare and delete the files from your site.
-b) Copy, paste and run the uninstall SQL in the Admin->SQLpatch tool or phpMyAdmin to remve the admin menu page item.
 
+b) Copy, paste and run the uninstall SQL in the Admin->SQLpatch tool or phpMyAdmin to remove the admin menu page item.
 
 ---------------------
 Changelog
 2020 06 13 torvista: limitation of search results to not exceed php input_max_vars
+
 2020 05 15 torvista: update of main file and removal of extra functions
+
 2020 02 28 torvista: bugfix to allow language selector dropdown
+
 2020 01 torvista: complete revision
+
 remove table layout
+
 conversion to html with embedded php
-expanded error checking for search critera
+
+expanded error checking for search criteria
 
 Copy-Duplicate
+
 Allow copy-duplicate to the same category
+
 Added duplication of meta tags
+
 Removed duplication of media collection (original version showed option, but was not implemented in code)
 
 added option show images
@@ -119,6 +110,3 @@ Added Delete from Linked Category. Added Delete Specials
 
 Originally written for osCommerce as:
 Multi-Product Copy Utility v1.1 by Kevin L. Shelton 7/28/2010
-
-
-
