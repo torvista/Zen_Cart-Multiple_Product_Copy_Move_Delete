@@ -87,10 +87,6 @@ define('TEXT_EXISTING_PRODUCTS_NOT_SHOWN', 'Only matching products <strong>not a
 define('TABLE_HEADING_SELECT', 'Selected');
 define('TEXT_TOGGLE_ALL', 'toggle all');
 define('TABLE_HEADING_PRODUCTS_ID', 'ID');
-//remove for ZC157+: constant defined in english.php)
-if (strpos(PROJECT_VERSION_MINOR, '5.7') === false) {
-    define('TABLE_HEADING_MODEL', 'Model');
-}
 define('TABLE_HEADING_IMAGE', 'Image');
 define('TABLE_HEADING_STATUS', 'Status');
 define('IMAGE_ICON_STATUS_ON_EDIT_PRODUCT', 'product is enabled -> Edit Product');
