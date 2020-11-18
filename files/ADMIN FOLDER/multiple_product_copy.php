@@ -66,15 +66,25 @@ function zen_get_manufacturers_name($manufacturers_id)
     return $manufacturer->fields['manufacturers_name'];
 }
 
-//Copied from Catalog functions as is, but with required parameter first
+//ZC157: function zen_parse_search_string(&$objects, $search_str = '') exists in the shopfront only, so the function is repeated here
+//ZC158: function zen_parse_search_string($search_str = '', &$objects = array()) is shared with the admin, and has the parameters swapped!
 // Parse search string into individual objects
 /**
  * @param $objects
  * @param string $search_str
  * @return bool
  */
-function zen_parse_search_string(&$objects, $search_str = '')
+function zen_parse_search_string_mpc(&$objects, $search_str = '')
 {
+    if (function_exists('zen_parse_search_string')) {//ZC158
+        return zen_parse_search_string($search_str, $objects);
+    }
+    return zen_parse_search_string_157($objects, $search_str);//ZC157
+}
+//Copied from ZC157 Catalog functions
+function zen_parse_search_string_157(&$objects, $search_str = '')
+{
+
     $search_str = strtolower(trim($search_str));
 
 // Break up $search_str on whitespace; quoted string will be reconstructed later
@@ -306,7 +316,7 @@ if ($action === 'find' || $action === 'confirm') { // validate form values from 
         case ($copy_as !== 'delete_specials' && $search_category_id === 0 && $manufacturer_id === 0 && $keywords === '' && $min_price === '' && $max_price === '' && $product_quantity === ''):  // "Any Category" selected, so another search term is required
             $error_message = ERROR_SEARCH_CRITERIA_REQUIRED;
             break;
-        case (zen_not_null($keywords) && !zen_parse_search_string($search_keywords, $keywords)):
+        case (zen_not_null($keywords) && !zen_parse_search_string_mpc($search_keywords, $keywords)):
             $error_message = ERROR_INVALID_KEYWORDS;
             break;
         case ($search_category_id !== 0 && zen_products_in_category_count($search_category_id, true, $inc_subcats) < 1): // no products found for Copy/Move/Delete
@@ -381,7 +391,7 @@ if ($action === 'find' || $action === 'confirm') { // validate form values from 
 switch ($action) {
     case 'find':
         $search_sql = 'SELECT p.products_id, p.manufacturers_id, p.master_categories_id, p.products_image, p.products_model, p.products_price_sorter, p.products_quantity, p.products_status, pd.products_name, pd.products_description, m.manufacturers_name, ptoc.categories_id, sp.specials_id
-FROM ' . TABLE_PRODUCTS . ' p 
+            FROM ' . TABLE_PRODUCTS . ' p 
             LEFT JOIN ' . TABLE_MANUFACTURERS . ' m ON p.manufacturers_id = m.manufacturers_id 
             LEFT JOIN ' . TABLE_SPECIALS . ' sp ON p.products_id = sp.products_id, ' .
             TABLE_PRODUCTS_DESCRIPTION . ' pd, ' .
@@ -429,7 +439,7 @@ FROM ' . TABLE_PRODUCTS . ' p
             if ($copy_as !== 'delete_linked'){
                 $search_sql .= ' AND p.master_categories_id = ptoc.categories_id';//prevent master and their linked products being listed
             }
-            
+
             $where_str .= ' AND (';
             for ($i = 0, $n = count($search_keywords); $i < $n; $i++) {
                 switch ($search_keywords[$i]) {
