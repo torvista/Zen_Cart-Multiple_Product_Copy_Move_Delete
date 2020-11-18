@@ -15,6 +15,7 @@ require('includes/application_top.php');
  * @var messageStack $messageStack
  * @var zcObserverLogEventListener $zco_notifier
  * @var products $zc_products
+ * @var queryFactory $db
  */
 $debug_mpc = false;
 if ($debug_mpc) {//steve debug
