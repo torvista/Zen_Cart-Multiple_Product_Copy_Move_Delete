@@ -8,9 +8,7 @@ https://www.zen-cart.com/showthread.php?180447-Multiple-Products-(Copy-Move-Dele
 
 USE AT OWN RISK - TEST THOROUGHLY ON YOUR DEVELOPMENT SERVER.
 
-Please report all bugs on Github.
-
-The plan is for this to be integrated into Zen Cart 1.5.8...
+Please report all bugs on GitHub.
 
 -----------------------------
 This utility allows you to perform multiple actions in one process.
