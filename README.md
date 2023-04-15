@@ -1,4 +1,10 @@
-#Multiple Products-Copy-Move-Delete for Zen Cart
+# Multiple Products-Copy-Move-Delete for Zen Cart
+
+This awesome utility allows you to perform multiple actions in one process.
+
+* Copy (as linked or duplicate) multiple products from one category to another
+* Delete multiple products
+* Move multiple products
 
 Based on
 https://www.zen-cart.com/showthread.php?180447-Multiple-Products-(Copy-Move-Delete)
@@ -11,13 +17,8 @@ USE AT OWN RISK - TEST THOROUGHLY ON YOUR DEVELOPMENT SERVER.
 Please report all bugs on GitHub.
 
 -----------------------------
-This utility allows you to perform multiple actions in one process.
 
-* Copy (as linked or duplicate) multiple products from one category to another
-* Delete multiple products
-* Move multiple products
-
-##How to Use
+## How to Use
 
 1. Choose an action.
 1. Choose a target/destination category (not for delete)
@@ -32,8 +33,8 @@ Click the Confirm button and all the checked products will be now linked as Link
 
 Clicking the "Return To Catalog Entry" button after the copy is done will open the destination category for review.
 
-##Installation
-DO NOT TEST ON YOUR PRODUCTION SERVER!!!!
+## Installation
+TEST ON YOUR DEVELOPMENT SERVER FIRST!
 
 1. Remove any previous version of this mod as per that version's instructions.
 
@@ -68,36 +69,27 @@ a) Use the backup you kept of this installation fileset to compare and delete th
 b) Copy, paste and run the uninstall SQL in the Admin->SQLpatch tool or phpMyAdmin to remove the admin menu page item.
 
 ---------------------
-Changelog
-2020 06 13 torvista: limitation of search results to not exceed php input_max_vars
+### Changelog
+2023 04 23: minor IDE fettling, no functional changes
+2020 06 13 torvista: limitation of search results to not exceed php input_max_vars  
+2020 05 15 torvista: update of main file and removal of extra functions  
+2020 02 28 torvista: bugfix to allow language selector dropdown  
+2020 01 torvista: complete rework  
+remove table layout  
+conversion to html with embedded php  
+expanded error checking for search criteria  
 
-2020 05 15 torvista: update of main file and removal of extra functions
+Copy-Duplicate  
+Allow copy-duplicate to the same category  
+Added duplication of meta tags  
+Removed duplication of media collection (original version showed option, but was not implemented in code)  
+added option show images  
 
-2020 02 28 torvista: bugfix to allow language selector dropdown
-
-2020 01 torvista: complete revision
-
-remove table layout
-
-conversion to html with embedded php
-
-expanded error checking for search criteria
-
-Copy-Duplicate
-
-Allow copy-duplicate to the same category
-
-Added duplication of meta tags
-
-Removed duplication of media collection (original version showed option, but was not implemented in code)
-
-added option show images
-
-Results page 2
+Results page 2  
 check/uncheck all selectboxes with javascript
 
-strict comparisons
-html validation
+strict comparisons  
+html validation  
 
 2019 10 torvista: put on Github.
 

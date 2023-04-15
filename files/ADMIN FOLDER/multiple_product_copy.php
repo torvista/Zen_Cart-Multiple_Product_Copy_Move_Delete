@@ -1,17 +1,18 @@
 <?php
+
+declare(strict_types=1);
 /**
  * @package admin
  * @copyright Copyright 2003-2010 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: torvista Apr 21 2020 New in v1.5.7 $
+ * @version $Id: torvista Apr 15 2023
  */
 
 require('includes/application_top.php');
 ///////////////////////////////////////////////////////
 //temporary debugging code: to be removed if ever this gets into core code....along with the various debugging echo's
 /**steve for phpStorm inspections
- * @array $_SESSION['messageToStack']
  * @var messageStack $messageStack
  * @var zcObserverLogEventListener $zco_notifier
  * @var products $zc_products
@@ -24,7 +25,7 @@ if ($debug_mpc) {//steve debug
         /**
          * @param $a
          */
-        function mv_printVar($a)
+        function mv_printVar($a): void
         {
             $backtrace = debug_backtrace()[0];
             $fh = fopen($backtrace['file'], 'rb');
@@ -58,9 +59,7 @@ $currencies = new currencies();
 function zen_get_manufacturers_name($manufacturers_id)
 {
     global $db;
-    $manufacturer = $db->Execute("select manufacturers_name
-                                  from " . TABLE_MANUFACTURERS . "
-                                  where manufacturers_id = " . (int)$manufacturers_id . " LIMIT 1");
+    $manufacturer = $db->Execute('SELECT manufacturers_name FROM ' . TABLE_MANUFACTURERS . ' WHERE manufacturers_id=' . (int)$manufacturers_id . ' LIMIT 1');
     if ($manufacturer->EOF) {
         return '';
     }
@@ -75,7 +74,7 @@ function zen_get_manufacturers_name($manufacturers_id)
  * @param string $search_str
  * @return bool
  */
-function zen_parse_search_string_mpc(&$objects, $search_str = '')
+function zen_parse_search_string_mpc(&$objects, string $search_str = '')
 {
     if (function_exists('zen_parse_search_string')) {//ZC158
         return zen_parse_search_string($search_str, $objects);
@@ -90,7 +89,7 @@ function zen_parse_search_string_157(&$objects, $search_str = '')
 
 // Break up $search_str on whitespace; quoted string will be reconstructed later
     $pieces = preg_split('/[[:space:]]+/', $search_str);
-    $objects = array();
+    $objects = [];
     $tmpstring = '';
     $flag = '';
 
@@ -104,7 +103,7 @@ function zen_parse_search_string_157(&$objects, $search_str = '')
             }
         }
 
-        $post_objects = array();
+        $post_objects = [];
 
         while (substr($pieces[$k], -1) == ')') {
             $post_objects[] = ')';
@@ -199,7 +198,7 @@ function zen_parse_search_string_157(&$objects, $search_str = '')
     }
 
 // add default logical operators if needed
-    $temp = array();
+    $temp = [];
     for ($i = 0; $i < (count($objects) - 1); $i++) {
         $temp[] = $objects[$i];
         if (($objects[$i] != 'and') &&
@@ -241,7 +240,7 @@ function zen_parse_search_string_157(&$objects, $search_str = '')
 /////////////////////////////////////////////////////////////
 $action = !empty($_GET['action']) ? $_GET['action'] : ''; // initial page load: set default action to '' to show search form (when $action is set, language selection dropdown is hidden)
 $copy_options = ['link', 'duplicate', 'move']; // allowed Copy/Move options
-$delete_options = ['delete_specials', 'delete_linked', 'delete_all']; // allowed Delete options
+$delete_options = ['delete_specials', 'delete_linked', 'delete_all']; // the allowed Delete options
 
 $copy_as = !empty($_POST['copy_as']) ? $_POST['copy_as'] : $_POST['copy_as'] = 'link'; // initial page load: set default function/radio button to Copy Linked (safest)
 if (in_array($copy_as, $delete_options, true)) {
@@ -281,7 +280,7 @@ if (isset($_POST['search_category_id'])) {
 } else {
     $search_category_id = ''; // "Please Select"
 }
-$max_input_vars = ini_get("max_input_vars");
+$max_input_vars = ini_get('max_input_vars');
 $max_input_vars_limit = $max_input_vars / 2 - 10; //found by empirical tests
 $keywords = (isset($_POST['keywords']) ? zen_db_prepare_input($_POST['keywords']) : '');
 $search_all = isset($_POST['search_all']) && $_POST['search_all'] === '1'; // search filter in name, model or manufacturers only (name) or also descriptions (all)
@@ -392,13 +391,13 @@ if ($action === 'find' || $action === 'confirm') { // validate form values from 
 switch ($action) {
     case 'find':
         $search_sql = 'SELECT p.products_id, p.manufacturers_id, p.master_categories_id, p.products_image, p.products_model, p.products_price_sorter, p.products_quantity, p.products_status, pd.products_name, pd.products_description, m.manufacturers_name, ptoc.categories_id, sp.specials_id
-            FROM ' . TABLE_PRODUCTS . ' p 
-            LEFT JOIN ' . TABLE_MANUFACTURERS . ' m ON p.manufacturers_id = m.manufacturers_id 
+            FROM ' . TABLE_PRODUCTS . ' p
+            LEFT JOIN ' . TABLE_MANUFACTURERS . ' m ON p.manufacturers_id = m.manufacturers_id
             LEFT JOIN ' . TABLE_SPECIALS . ' sp ON p.products_id = sp.products_id, ' .
             TABLE_PRODUCTS_DESCRIPTION . ' pd, ' .
             TABLE_PRODUCTS_TO_CATEGORIES . ' ptoc
-            WHERE p.products_id = pd.products_id 
-            AND p.products_id = ptoc.products_id 
+            WHERE p.products_id = pd.products_id
+            AND p.products_id = ptoc.products_id
             AND pd.language_id =  ' . (int)$_SESSION['languages_id'];
 
         if ($copy_as === 'delete_specials') {
@@ -507,11 +506,11 @@ switch ($action) {
         }
         foreach ($products_selected as $key => $id) { //$id is an integer
 
-            $found_product = $db->Execute('SELECT p.products_id, p.products_model, p.master_categories_id, p.products_price_sorter, p.products_quantity,  pd.products_name,  m.manufacturers_name 
-                    FROM ' . TABLE_PRODUCTS . ' p 
-                    LEFT JOIN ' . TABLE_MANUFACTURERS . ' m ON p.manufacturers_id = m.manufacturers_id, ' . TABLE_PRODUCTS_DESCRIPTION . ' pd 
-                    WHERE p.products_id = pd.products_id 
-                    AND pd.language_id = ' . (int)$_SESSION['languages_id'] . ' 
+            $found_product = $db->Execute('SELECT p.products_id, p.products_model, p.master_categories_id, p.products_price_sorter, p.products_quantity,  pd.products_name,  m.manufacturers_name
+                    FROM ' . TABLE_PRODUCTS . ' p
+                    LEFT JOIN ' . TABLE_MANUFACTURERS . ' m ON p.manufacturers_id = m.manufacturers_id, ' . TABLE_PRODUCTS_DESCRIPTION . ' pd
+                    WHERE p.products_id = pd.products_id
+                    AND pd.language_id = ' . (int)$_SESSION['languages_id'] . '
                     AND p.products_id = ' . $id . ' LIMIT 1');
 
             if ($found_product->RecordCount() === 1) {
@@ -562,9 +561,9 @@ switch ($action) {
                         if ($copy_specials === 'copy_specials_yes') {
                             $chk_specials = $db->Execute('SELECT * FROM ' . TABLE_SPECIALS . ' WHERE products_id= ' . (int)$id);
                             foreach ($chk_specials as $row) {
-                                $db->Execute('INSERT INTO ' . TABLE_SPECIALS . ' 
-                                        (products_id, specials_new_products_price, specials_date_added, expires_date, status, specials_date_available) 
-                                        VALUES 
+                                $db->Execute('INSERT INTO ' . TABLE_SPECIALS . '
+                                        (products_id, specials_new_products_price, specials_date_added, expires_date, status, specials_date_available)
+                                        VALUES
                                         (' . $dup_products_id . ", '" . zen_db_input($row['specials_new_products_price']) . "', now(), '" . zen_db_input($row['expires_date']) . "', '1', '" . zen_db_input($row['specials_date_available']) . "')");
                                 $messageStack->add(sprintf(TEXT_COPY_AS_DUPLICATE_SPECIALS, $id, $dup_products_id), 'success');
                             }
@@ -573,8 +572,8 @@ switch ($action) {
                         if ($copy_featured === 'copy_featured_yes') {
                             $chk_featured = $db->Execute('SELECT * FROM ' . TABLE_FEATURED . ' WHERE products_id= ' . (int)$id);
                             foreach ($chk_featured as $row) {
-                                $db->Execute('INSERT INTO ' . TABLE_FEATURED . ' 
-                                        (products_id, featured_date_added, expires_date, status, featured_date_available) VALUES 
+                                $db->Execute('INSERT INTO ' . TABLE_FEATURED . '
+                                        (products_id, featured_date_added, expires_date, status, featured_date_available) VALUES
                                         (' . $dup_products_id . ", now(), '" . zen_db_input($row['expires_date']) . "', '1', '" . zen_db_input($row['featured_date_available']) . "')");
 
                                 $messageStack->add(sprintf(TEXT_COPY_AS_DUPLICATE_FEATURED, $id, $dup_products_id), 'success');
@@ -1063,7 +1062,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                         <th class="dataTableHeadingContent text-center"><?php echo TABLE_HEADING_SELECT; ?>
                             <span id="toggleCheckbox"></span><?php // placeholder for toggle checkbox: no content when javascript disabled ?>
                             <script title="toggle all checkboxes">
-                                document.getElementById('toggleCheckbox').innerHTML = '<br><label style="font-weight:normal"><input type="checkbox" onClick="toggle(this)" /><?php echo TEXT_TOGGLE_ALL; ?></label>';
+                                document.getElementById('toggleCheckbox').innerHTML = '<br><label style="font-weight:normal"><input type="checkbox" onClick="toggle(this)"><?php echo TEXT_TOGGLE_ALL; ?></label>';
 
                                 function toggle(source) {
                                     let checkboxes = document.getElementsByClassName('checkboxMPC');
@@ -1109,7 +1108,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                             <tr class="dataTableRow">
                                 <td class="dataTableContent text-center">
                                     <?php
-                                    if ($copy_as === 'delete_linked' && $search_result['master_categories_id'] === $search_result['categories_id']) { // Do not allow deletion of product from it's master category
+                                    if ($copy_as === 'delete_linked' && $search_result['master_categories_id'] === $search_result['categories_id']) { // Do not allow deletion of product from its master category
                                         echo zen_image(DIR_WS_IMAGES . 'icon_red_off.gif', '', '', '', 'title ="' . IMAGE_ICON_MASTER . '"');
                                     } else {
                                         echo zen_draw_checkbox_field('product[' . $cnt . ']', $search_result['products_id'], $autocheck, '', 'id="product[' . $cnt . ']" class="checkboxMPC"');
@@ -1248,10 +1247,11 @@ if ($action === 'find') { //disable Confirm button until a selection is made ?>
         $(function(){
             $("input[type='checkBox']").change(function(){
                 let len = $("input[type='checkBox']:checked").length;
-                if (len === 0)
+                if (len === 0) {
                     $("#submitConfirm").prop("disabled", true);
-                else
+                } else {
                     $("#submitConfirm").removeAttr("disabled");
+                }
             });
             $("input[type='checkBox']").trigger('change');
         });
