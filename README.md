@@ -70,7 +70,7 @@ b) Copy, paste and run the uninstall SQL in the Admin->SQLpatch tool or phpMyAdm
 
 ---------------------
 ### Changelog
-2023 04 23: minor IDE fettling, no functional changes
+2023 04 23: minor IDE fettling, fix for confirmation text for moved, update debug function  
 2020 06 13 torvista: limitation of search results to not exceed php input_max_vars  
 2020 05 15 torvista: update of main file and removal of extra functions  
 2020 02 28 torvista: bugfix to allow language selector dropdown  

@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-/**
+/** https://github.com/torvista/Zen_Cart-Multiple_Products_Copy_Move_Delete
  * @package admin
  * @copyright Copyright 2003-2010 Zen Cart Development Team
  * @copyright Portions Copyright 2003 osCommerce
@@ -25,7 +25,7 @@ if ($debug_mpc) {//steve debug
         /**
          * @param $a
          */
-        function mv_printVar($a): void
+        function mv_printVar($a)
         {
             $backtrace = debug_backtrace()[0];
             $fh = fopen($backtrace['file'], 'rb');
@@ -35,8 +35,16 @@ if ($debug_mpc) {//steve debug
                 $code = fgets($fh);
             }
             fclose($fh);
-            preg_match('/' . __FUNCTION__ . '\s*\((.*)\)\s*;/u', $code, $name);
-            echo '<pre><strong>' . trim($name[1]) . ":</strong>\n";
+            if ($code !== false) {
+                preg_match('/' . __FUNCTION__ . '\s*\((.*)\)\s*;/u', $code, $name);
+            } else {
+                $name = '';
+            }
+            echo '<pre>';
+            if (!empty($name[1])) {
+                echo '<strong>' . trim($name[1]) . '</strong> (' . gettype($a) . "):\n";
+            }
+            //var_export($a);
             print_r($a);
             echo '</pre><br>';
         }
@@ -1001,7 +1009,7 @@ require(DIR_WS_INCLUDES . 'header.php');
                     <h3><?php echo sprintf(TEXT_SEARCH_RESULT_TARGET, $target_category_id, zen_output_generated_category_path($target_category_id)); ?></h3>
                     <?php echo $search_criteria;
                     if ($action === 'confirm' || $action === 'multiple_product_copy_return') { ?>
-                        <h4><?php echo sprintf(TEXT_PRODUCTS_COPIED_TO, count($products_modified), $target_category_id, zen_output_generated_category_path($target_category_id)); ?></h4>
+                        <h4><?php echo sprintf(TEXT_PRODUCTS_MOVED_TO, count($products_modified), $target_category_id, zen_output_generated_category_path($target_category_id)); ?></h4>
                     <?php }
                     break;
 
