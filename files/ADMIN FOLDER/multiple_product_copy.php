@@ -1,17 +1,11 @@
 <?php
-
-declare(strict_types=1);
-/** https://github.com/torvista/Zen_Cart-Multiple_Products_Copy_Move_Delete
- * @package admin
- * @copyright Copyright 2003-2010 Zen Cart Development Team
- * @copyright Portions Copyright 2003 osCommerce
- * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: torvista Apr 15 2023
- */
+// Plugin Multiple Product Copy
+// https://github.com/torvista/Zen_Cart-Multiple_Products_Copy_Move_Delete
+// @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
 
 require('includes/application_top.php');
 ///////////////////////////////////////////////////////
-//temporary debugging code: to be removed if ever this gets into core code....along with the various debugging echo's
+//temporary debugging code: to be removed if ever this gets into core code....along with the various debugging echos
 /**steve for phpStorm inspections
  * @var messageStack $messageStack
  * @var zcObserverLogEventListener $zco_notifier

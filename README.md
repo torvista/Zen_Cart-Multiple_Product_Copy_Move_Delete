@@ -10,11 +10,11 @@ Based on
 https://www.zen-cart.com/showthread.php?180447-Multiple-Products-(Copy-Move-Delete)
 
 -----------------------------
-2020 11 04 Current Status: tested on php 7.3.11 with Zen Cart 157a
+Status as of 2023 04 23: Tested on Zen Cart 158a and php 8.2.5.
 
-USE AT OWN RISK - TEST THOROUGHLY ON YOUR DEVELOPMENT SERVER.
+This is a complex plugin, although it has been in use on my site for a long time, you may find a bug, so BEFORE making big changes on your production site TEST THOROUGHLY ON YOUR DEVELOPMENT SERVER.
 
-Please report all bugs on GitHub.
+Please report all bugs on GitHub with steps how to reproduce.
 
 -----------------------------
 
@@ -45,14 +45,18 @@ All are new files/no core files should be overwritten.
 The menu entry should be added to the Admin->Catalog section automatically.
 1. REQUIRED CORE FILE MODIFICATIONS
 
-    Multiple Product copy makes use of two core module files for copy and move. These files are normally used for one product/ are only run once and then redirect to the category listing page.
-
-    To allow them to be run multiple times (for multiple copy/move) and to return back to the Multiple Product Copy results, a clause needs to be added around the redirect at the end of each file.
+    Multiple Product Copy requires modifications to two core module files for copy and move
+	
+	These files are normally used for one product/ are only run once and then redirect to the category listing page.  
+	To allow them to be run multiple times (for multiple copy/move) and to return back to the Multiple Product Copy results, a clause needs to be added around the redirect at the end of each file.
 
     The changes required are in these files, which you should have already copied to ADMIN/includes/modules
 
-    /ADMIN FOLDER/includes/modules/copy_to_confirm.php_multiple_product_copy
-    /ADMIN FOLDER/includes/modules/move_product_confirm.php_multiple_product_copy
+    /ADMIN FOLDER/includes/modules/copy_to_confirm. MPC FOR MERGING php  
+    /ADMIN FOLDER/includes/modules/move_product_confirm. MPC FOR MERGING php
+
+They are named as such to prevent accidental overwriting.  
+The original ZC158 files are also included for reference/to show the differences.
 
     Compare each file to yours and merge the differences to yours.
 
@@ -62,7 +66,7 @@ The menu entry should be added to the Admin->Catalog section automatically.
 
     you will need to add the similar IF statement around the redirect on the last line of the file.
    
-1. Uninstall
+### Uninstall
 
 a) Use the backup you kept of this installation fileset to compare and delete the files from your site.
 
@@ -70,7 +74,7 @@ b) Copy, paste and run the uninstall SQL in the Admin->SQLpatch tool or phpMyAdm
 
 ---------------------
 ### Changelog
-2023 04 23: minor IDE fettling, fix for confirmation text for moved, update debug function  
+2023 04 23: minor IDE fettling, fix for confirmation text for moved products, update debug function, update modified core files
 2020 06 13 torvista: limitation of search results to not exceed php input_max_vars  
 2020 05 15 torvista: update of main file and removal of extra functions  
 2020 02 28 torvista: bugfix to allow language selector dropdown  

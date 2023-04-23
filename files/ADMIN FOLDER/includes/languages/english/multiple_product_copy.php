@@ -1,11 +1,7 @@
 <?php
-/**
- * @package admin
- * @copyright Copyright 2003-2010 Zen Cart Development Team
- * @copyright Portions Copyright 2003 osCommerce
- * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version $Id: torvista Apr 15 2023
-*/
+// Plugin Multiple Product Copy
+// https://github.com/torvista/Zen_Cart-Multiple_Products_Copy_Move_Delete
+// @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
 
 define('HEADING_TITLE', 'Multiple Product Copy/Move/Delete');
 
@@ -124,8 +120,9 @@ define('BUTTON_NEW_SEARCH', 'New Search');
 
 //Confirm Copy Linked
 define('TEXT_PRODUCTS_COPIED_TO', '%1$u product(s) copied to Category "%3$s" ID#%2$u ');
-//Confirm Move
+//Confirm Moved
 define('TEXT_PRODUCTS_MOVED_TO', '%1$u product(s) moved to Category "%3$s" ID#%2$u ');
+
 //Confirm Copy Duplicates
 //these four constants used in copy_product_confirm
 if (!defined('TEXT_DUPLICATE_IDENTIFIER')) {
