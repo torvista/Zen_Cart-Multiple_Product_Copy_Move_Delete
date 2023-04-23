@@ -716,22 +716,9 @@ switch ($action) {
 <!doctype html>
 <html <?php echo HTML_PARAMS; ?>>
 <head>
-    <meta charset="<?php echo CHARSET; ?>">
-    <title><?php echo TITLE; ?></title>
-    <link rel="stylesheet" type="text/css" href="includes/stylesheet.css">
-    <link rel="stylesheet" type="text/css" media="print" href="includes/stylesheet_print.css">
-    <link rel="stylesheet" type="text/css" href="includes/cssjsmenuhover.css" media="all" id="hoverJS">
-    <script src="includes/menu.js"></script>
-    <script src="includes/general.js"></script>
-    <script>
-        function init() {
-            cssjsmenu('navbar');
-            if (document.getElementById) {
-                var kill = document.getElementById('hoverJS');
-                kill.disabled = true;
-            }
-        }
-    </script>
+    <?php require DIR_WS_INCLUDES . 'admin_html_head.php'; ?>
+    <link rel="stylesheet" media="print" href="includes/css/stylesheet_print.css">
+    
     <style>
         .dataTableHeadingContent {
             vertical-align: top !important; /* for results table headings aligned above toggle checkbox. !important required to override .less */
@@ -745,17 +732,16 @@ switch ($action) {
             padding: 2px 5px;
         }
     </style>
-</head>
-<body onload="init()">
-<div id="spiffycalendar" class="text"></div>
-<!-- header //-->
-<?php
-require(DIR_WS_INCLUDES . 'header.php');
-?>
-<!-- header_eof //-->
-<!-- body //-->
-<div class="container-fluid">
-    <!-- body_text //-->
+  </head>
+  <body>
+    <!-- header //-->
+    <?php
+    require(DIR_WS_INCLUDES . 'header.php');
+    ?>
+    <!-- header_eof //-->
+    <!-- body //-->
+    <div class="container-fluid">
+      <!-- body_text //-->
     <h1><?php echo HEADING_TITLE; ?></h1>
     <?php if ($action === '') {
         $target_categories = zen_get_category_tree('0', '', '', [['id' => '', 'text' => PLEASE_SELECT]], '', true); ?>
@@ -1238,11 +1224,6 @@ require(DIR_WS_INCLUDES . 'header.php');
     <!-- body_text_eof //-->
 </div>
 <!-- body_eof //-->
-<!-- footer //-->
-<div class="footer-area">
-    <?php require(DIR_WS_INCLUDES . 'footer.php'); ?>
-</div>
-<!-- footer_eof //-->
 <?php
 if ($action === 'find') { //disable Confirm button until a selection is made ?>
     <script>
@@ -1260,6 +1241,11 @@ if ($action === 'find') { //disable Confirm button until a selection is made ?>
     </script>
 <?php }
 ?>
+<!-- footer //-->
+<div class="footer-area">
+    <?php require(DIR_WS_INCLUDES . 'footer.php'); ?>
+</div>
+<!-- footer_eof //-->
 </body>
 </html>
 <?php require(DIR_WS_INCLUDES . 'application_bottom.php'); ?>
