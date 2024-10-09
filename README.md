@@ -10,7 +10,7 @@ Based on
 https://www.zen-cart.com/showthread.php?180447-Multiple-Products-(Copy-Move-Delete)
 
 -----------------------------
-Status as of 2023 04 23: Tested on Zen Cart 158a and php 8.2.5.
+Status as of 2024 10 09: Tested on Zen Cart 2.1 and php 8.3.12.
 
 This is a complex plugin, although it has been in use on my site for a long time, you may find a bug, so BEFORE making big changes on your production site TEST THOROUGHLY ON YOUR DEVELOPMENT SERVER.
 
@@ -66,14 +66,15 @@ The original ZC158 files are also included for reference/to show the differences
 
     you will need to add the similar IF statement around the redirect on the last line of the file.
    
-### Uninstall
+## Uninstall
 
 a) Use the backup you kept of this installation fileset to compare and delete the files from your site.
 
 b) Copy, paste and run the uninstall SQL in the Admin->SQLpatch tool or phpMyAdmin to remove the admin menu page item.
 
 ---------------------
-### Changelog
+## Changelog
+2024 10 09: php echo short tags  
 2023 04 23: minor IDE fettling, fix for confirmation text for moved products, update debug function, update modified core files
 2020 06 13 torvista: limitation of search results to not exceed php input_max_vars  
 2020 05 15 torvista: update of main file and removal of extra functions  
