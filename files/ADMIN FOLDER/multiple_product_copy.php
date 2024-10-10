@@ -1,17 +1,19 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * Plugin Multiple Product Copy
- * https://github.com/torvista/Zen_Cart-Multiple_Products_Copy_Move_Delete
+ * @link https://github.com/torvista/Zen_Cart-Multiple_Products_Copy_Move_Delete
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @updated 09/10/2024 torvista
+ * @updated 10/10/2024 torvista
  */
 
 require('includes/application_top.php');
+
 ///////////////////////////////////////////////////////
 //temporary debugging code: to be removed if ever this gets into core code...along with the various debugging echos
-/**steve for phpStorm inspections
+/** for phpStorm inspections
  * @var messageStack $messageStack
  * @var zcObserverLogEventListener $zco_notifier
  * @var products $zc_products
@@ -24,7 +26,7 @@ if ($debug_mpc) {//steve debug
         /**
          * @param $a
          */
-        function mv_printVar($a)
+        function mv_printVar($a): void
         {
             $backtrace = debug_backtrace()[0];
             $fh = fopen($backtrace['file'], 'rb');
@@ -54,16 +56,17 @@ if ($debug_mpc) {//steve debug
 }
 //eof temporary debugging code
 ///////////////////////////////////////////////////////////
+
 require(DIR_WS_CLASSES . 'currencies.php');
 $currencies = new currencies();
-
 //////////////////////////////////////////////
-//File-specific functions
+//File-specific function
+//todo replace
 /**
  * @param $manufacturers_id
  * @return mixed|string
  */
-function zen_get_manufacturers_name($manufacturers_id)
+function mpc_get_manufacturers_name($manufacturers_id)
 {
     global $db;
     $manufacturer = $db->Execute('SELECT manufacturers_name FROM ' . TABLE_MANUFACTURERS . ' WHERE manufacturers_id=' . (int)$manufacturers_id . ' LIMIT 1');
@@ -71,177 +74,6 @@ function zen_get_manufacturers_name($manufacturers_id)
         return '';
     }
     return $manufacturer->fields['manufacturers_name'];
-}
-
-//ZC157: function zen_parse_search_string(&$objects, $search_str = '') exists in the shopfront only, so the function is repeated here
-//ZC158: function zen_parse_search_string($search_str = '', &$objects = array()) is shared with the admin, and has the parameters swapped!
-// Parse search string into individual objects
-/**
- * @param $objects
- * @param string $search_str
- * @return bool
- */
-function zen_parse_search_string_mpc(&$objects, string $search_str = '')
-{
-    if (function_exists('zen_parse_search_string')) {//ZC158
-        return zen_parse_search_string($search_str, $objects);
-    }
-    return zen_parse_search_string_157($objects, $search_str);//ZC157
-}
-//Copied from ZC157 Catalog functions
-function zen_parse_search_string_157(&$objects, $search_str = '')
-{
-
-    $search_str = strtolower(trim($search_str));
-
-// Break up $search_str on whitespace; quoted string will be reconstructed later
-    $pieces = preg_split('/[[:space:]]+/', $search_str);
-    $objects = [];
-    $tmpstring = '';
-    $flag = '';
-
-    for ($k = 0; $k < count($pieces); $k++) {
-        while (substr($pieces[$k], 0, 1) == '(') {
-            $objects[] = '(';
-            if (strlen($pieces[$k]) > 1) {
-                $pieces[$k] = substr($pieces[$k], 1);
-            } else {
-                $pieces[$k] = '';
-            }
-        }
-
-        $post_objects = [];
-
-        while (substr($pieces[$k], -1) == ')') {
-            $post_objects[] = ')';
-            if (strlen($pieces[$k]) > 1) {
-                $pieces[$k] = substr($pieces[$k], 0, -1);
-            } else {
-                $pieces[$k] = '';
-            }
-        }
-
-// Check individual words
-
-        if ((substr($pieces[$k], -1) != '"') && (substr($pieces[$k], 0, 1) != '"')) {
-            $objects[] = trim($pieces[$k]);
-
-            for ($j = 0, $n = count($post_objects); $j < $n; $j++) {
-                $objects[] = $post_objects[$j];
-            }
-        } else {
-            /* This means that the $piece is either the beginning or the end of a string.
-               So, we'll slurp up the $pieces and stick them together until we get to the
-               end of the string or run out of pieces.
-            */
-
-// Add this word to the $tmpstring, starting the $tmpstring
-            $tmpstring = trim(preg_replace('/"/', ' ', $pieces[$k]));
-
-// Check for one possible exception to the rule. That there is a single quoted word.
-            if (substr($pieces[$k], -1) == '"') {
-// Turn the flag off for future iterations
-                $flag = 'off';
-
-                $objects[] = trim($pieces[$k]);
-
-                for ($j = 0, $n = count($post_objects); $j < $n; $j++) {
-                    $objects[] = $post_objects[$j];
-                }
-
-                unset($tmpstring);
-
-// Stop looking for the end of the string and move onto the next word.
-                continue;
-            }
-
-// Otherwise, turn on the flag to indicate no quotes have been found attached to this word in the string.
-            $flag = 'on';
-
-// Move on to the next word
-            $k++;
-
-// Keep reading until the end of the string as long as the $flag is on
-
-            while (($flag == 'on') && ($k < count($pieces))) {
-                while (substr($pieces[$k], -1) == ')') {
-                    $post_objects[] = ')';
-                    if (strlen($pieces[$k]) > 1) {
-                        $pieces[$k] = substr($pieces[$k], 0, -1);
-                    } else {
-                        $pieces[$k] = '';
-                    }
-                }
-
-// If the word doesn't end in double quotes, append it to the $tmpstring.
-                if (substr($pieces[$k], -1) != '"') {
-// Tack this word onto the current string entity
-                    $tmpstring .= ' ' . $pieces[$k];
-
-// Move on to the next word
-                    $k++;
-                    continue;
-                } else {
-                    /* If the $piece ends in double quotes, strip the double quotes, tack the
-                       $piece onto the tail of the string, push the $tmpstring onto the $haves,
-                       kill the $tmpstring, turn the $flag "off", and return.
-                    */
-                    $tmpstring .= ' ' . trim(preg_replace('/"/', ' ', $pieces[$k]));
-
-// Push the $tmpstring onto the array of stuff to search for
-                    $objects[] = trim($tmpstring);
-
-                    for ($j = 0, $n = count($post_objects); $j < $n; $j++) {
-                        $objects[] = $post_objects[$j];
-                    }
-
-                    unset($tmpstring);
-
-// Turn off the flag to exit the loop
-                    $flag = 'off';
-                }
-            }
-        }
-    }
-
-// add default logical operators if needed
-    $temp = [];
-    for ($i = 0; $i < (count($objects) - 1); $i++) {
-        $temp[] = $objects[$i];
-        if (($objects[$i] != 'and') &&
-            ($objects[$i] != 'or') &&
-            ($objects[$i] != '(') &&
-            ($objects[$i + 1] != 'and') &&
-            ($objects[$i + 1] != 'or') &&
-            ($objects[$i + 1] != ')')) {
-            $temp[] = ADVANCED_SEARCH_DEFAULT_OPERATOR;
-        }
-    }
-    $temp[] = $objects[$i];
-    $objects = $temp;
-
-    $keyword_count = 0;
-    $operator_count = 0;
-    $balance = 0;
-    for ($i = 0; $i < count($objects); $i++) {
-        if ($objects[$i] == '(') {
-            $balance--;
-        }
-        if ($objects[$i] == ')') {
-            $balance++;
-        }
-        if (($objects[$i] == 'and') || ($objects[$i] == 'or')) {
-            $operator_count++;
-        } elseif ((is_string($objects[$i]) && $objects[$i] == '0') || ($objects[$i]) && ($objects[$i] != '(') && ($objects[$i] != ')')) {
-            $keyword_count++;
-        }
-    }
-
-    if (($operator_count < $keyword_count) && ($balance == 0)) {
-        return true;
-    } else {
-        return false;
-    }
 }
 
 /////////////////////////////////////////////////////////////
@@ -325,7 +157,7 @@ if ($action === 'find' || $action === 'confirm') { // validate form values from 
         case ($copy_as !== 'delete_specials' && $search_category_id === 0 && $manufacturer_id === 0 && $keywords === '' && $min_price === '' && $max_price === '' && $product_quantity === ''):  // "Any Category" selected, so another search term is required
             $error_message = ERROR_SEARCH_CRITERIA_REQUIRED;
             break;
-        case (zen_not_null($keywords) && !zen_parse_search_string_mpc($search_keywords, $keywords)):
+        case (zen_not_null($keywords) && !zen_parse_search_string($keywords, $search_keywords)):
             $error_message = ERROR_INVALID_KEYWORDS;
             break;
         case ($search_category_id !== 0 && zen_products_in_category_count($search_category_id, true, $inc_subcats) < 1): // no products found for Copy/Move/Delete
@@ -515,7 +347,7 @@ switch ($action) {
         }
         foreach ($products_selected as $key => $id) { //$id is an integer
 
-            $found_product = $db->Execute('SELECT p.products_id, p.products_model, p.master_categories_id, p.products_price_sorter, p.products_quantity,  pd.products_name,  m.manufacturers_name
+            $found_product = $db->Execute('SELECT p.products_id, p.products_type, p.products_model, p.master_categories_id, p.products_price_sorter, p.products_quantity,  pd.products_name,  m.manufacturers_name
                     FROM ' . TABLE_PRODUCTS . ' p
                     LEFT JOIN ' . TABLE_MANUFACTURERS . ' m ON p.manufacturers_id = m.manufacturers_id, ' . TABLE_PRODUCTS_DESCRIPTION . ' pd
                     WHERE p.products_id = pd.products_id
@@ -551,6 +383,7 @@ switch ($action) {
                     $_POST['products_id'] = $id; // for copy_product_confirm
                     $_POST['categories_id'] = $target_category_id; // for copy_product_confirm
                     $product_type = zen_get_products_type($id); // for copy_product_confirm
+
                     // new product creation is handled by the following module, creating $dup_products_id (copy_attributes, copy_metatags, copy_linked_categories, copy_discounts also handled here)
                     if (file_exists(DIR_WS_MODULES . $zc_products->get_handler($product_type) . '/copy_product_confirm.php')) {
                         require(DIR_WS_MODULES . $zc_products->get_handler($product_type) . '/copy_product_confirm.php');
@@ -573,7 +406,7 @@ switch ($action) {
                                 $db->Execute('INSERT INTO ' . TABLE_SPECIALS . '
                                         (products_id, specials_new_products_price, specials_date_added, expires_date, status, specials_date_available)
                                         VALUES
-                                        (' . $dup_products_id . ", '" . zen_db_input($row['specials_new_products_price']) . "', now(), '" . zen_db_input($row['expires_date']) . "', '1', '" . zen_db_input($row['specials_date_available']) . "')");
+                                        (' . $dup_products_id . ", '" . $row['specials_new_products_price'] . "', now(), '" . $row['expires_date'] . "', '1', '" . $row['specials_date_available'] . "')");
                                 $messageStack->add(sprintf(TEXT_COPY_AS_DUPLICATE_SPECIALS, $id, $dup_products_id), 'success');
                             }
                         }
@@ -583,7 +416,7 @@ switch ($action) {
                             foreach ($chk_featured as $row) {
                                 $db->Execute('INSERT INTO ' . TABLE_FEATURED . '
                                         (products_id, featured_date_added, expires_date, status, featured_date_available) VALUES
-                                        (' . $dup_products_id . ", now(), '" . zen_db_input($row['expires_date']) . "', '1', '" . zen_db_input($row['featured_date_available']) . "')");
+                                        (' . $dup_products_id . ", now(), '" . $row['expires_date'] . "', '1', '" . $row['featured_date_available'] . "')");
 
                                 $messageStack->add(sprintf(TEXT_COPY_AS_DUPLICATE_FEATURED, $id, $dup_products_id), 'success');
                             }
@@ -598,7 +431,7 @@ switch ($action) {
                             'name' => zen_get_products_name($dup_products_id),
                             'category' => $target_category_id,
                             'master_category' => $target_category_id,
-                            'quantity' => zen_products_lookup($dup_products_id, 'products_quantity'),
+                            'quantity' => zen_get_products_stock($dup_products_id),
                             'price' => zen_get_products_display_price($dup_products_id),
                             'manufacturer' => zen_get_products_manufacturers_name($dup_products_id)
                         ];
@@ -775,6 +608,7 @@ switch ($action) {
                                 <tr>
                                     <td><?= TEXT_COPY_ATTRIBUTES ?></td>
                                     <td>
+                                        <?php // todo $? ?>
                                         <label><?= zen_draw_radio_field('copy_attributes', '$copy_attributes_yes', ($copy_attributes === 'copy_attributes_yes')) . ' ' . TEXT_YES ?></label>
                                         <label><?= zen_draw_radio_field('copy_attributes', '$copy_attributes_no', ($copy_attributes === 'copy_attributes_no')) . ' ' . TEXT_NO ?></label>
                                     </td>
@@ -926,7 +760,7 @@ switch ($action) {
                     <p><?= sprintf(TEXT_SEARCH_RESULT_KEYWORDS, $keywords) ?></p>
                 <?php }
                 if ($manufacturer_id !== '') { ?>
-                    <p><?= sprintf(TEXT_SEARCH_RESULT_MANUFACTURER, ($manufacturer_id === 0 ? TEXT_ALL_MANUFACTURERS : '"' . zen_get_manufacturers_name($manufacturer_id) . '"')) ?></p>
+                    <p><?= sprintf(TEXT_SEARCH_RESULT_MANUFACTURER, ($manufacturer_id === 0 ? TEXT_ALL_MANUFACTURERS : '"' . mpc_get_manufacturers_name($manufacturer_id) . '"')) ?></p>
                 <?php }
                 if ($min_price !== '') { ?>
                     <p><?= sprintf(TEXT_SEARCH_RESULT_MIN_PRICE, $min_price) ?></p>
@@ -1053,10 +887,8 @@ switch ($action) {
                     <thead>
                     <tr class="dataTableHeadingRow">
                         <th class="dataTableHeadingContent text-center"><?= TABLE_HEADING_SELECT ?>
-                            <span id="toggleCheckbox"></span><?php // placeholder for toggle checkbox: no content when javascript disabled ?>
-                            <script title="toggle all checkboxes">
-                                document.getElementById('toggleCheckbox').innerHTML = '<br><label style="font-weight:normal"><input type="checkbox" onClick="toggle(this)"><?= TEXT_TOGGLE_ALL ?></label>';
-
+                            <br><label><?= TEXT_TOGGLE_ALL ?><br><input type="checkbox" onClick="toggle(this)"></label>
+                            <script>
                                 function toggle(source) {
                                     let checkboxes = document.getElementsByClassName('checkboxMPC');
                                     for (let i = 0, n = checkboxes.length; i < n; i++) {
@@ -1232,6 +1064,11 @@ switch ($action) {
 <?php
 if ($action === 'find') { //disable the Confirm button until a selection is made ?>
     <script>
+        $("input[type='checkBox']").change(function () {
+            $("#submitConfirm").prop("disabled", !this.checked);
+        }).change();
+
+            /*
         $(function(){
             $("input[type='checkBox']").change(function(){
                 let len = $("input[type='checkBox']:checked").length;
@@ -1243,6 +1080,7 @@ if ($action === 'find') { //disable the Confirm button until a selection is made
             });
             $("input[type='checkBox']").trigger('change');
         });
+        */
     </script>
 <?php }
 ?>
