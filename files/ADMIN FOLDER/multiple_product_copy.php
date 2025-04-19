@@ -6,7 +6,7 @@ declare(strict_types=1);
  * Plugin Multiple Product Copy
  * @link https://github.com/torvista/Zen_Cart-Multiple_Products_Copy_Move_Delete
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @updated 10/10/2024 torvista
+ * @version 06/02/2025 torvista
  */
 
 require('includes/application_top.php');
@@ -25,6 +25,7 @@ if ($debug_mpc) {//steve debug
     if (!function_exists('mv_printVar')) {
         /**
          * @param $a
+         * function generates formatted debugging output
          */
         function mv_printVar($a): void
         {
@@ -100,7 +101,7 @@ $copy_discounts = isset($_POST['copy_discounts']) && $_POST['copy_discounts'] ==
 $copy_specials = isset($_POST['copy_specials']) && $_POST['copy_specials'] === 'copy_specials_no' ? 'copy_specials_no' : 'copy_specials_yes';
 $copy_featured = isset($_POST['copy_featured']) && $_POST['copy_featured'] === 'copy_featured_no' ? 'copy_featured_no' : 'copy_featured_yes';
 
-$inc_subcats = isset($_POST['inc_subcats']) && $_POST['inc_subcats'] === '1' ? 1 : 0; // for Delete only
+$inc_subcats = isset($_POST['inc_subcats']) && $_POST['inc_subcats'] === '1'; // for Delete only
 
 if (!$delete_option && isset($_POST['target_category_id']) && $_POST['target_category_id'] !== '' && zen_get_categories_status((int)$_POST['target_category_id']) !== '') { // not used for Delete.
     $target_category_id = (int)$_POST['target_category_id'];
@@ -385,11 +386,7 @@ switch ($action) {
                     $product_type = zen_get_products_type($id); // for copy_product_confirm
 
                     // new product creation is handled by the following module, creating $dup_products_id (copy_attributes, copy_metatags, copy_linked_categories, copy_discounts also handled here)
-                    if (file_exists(DIR_WS_MODULES . $zc_products->get_handler($product_type) . '/copy_product_confirm.php')) {
-                        require(DIR_WS_MODULES . $zc_products->get_handler($product_type) . '/copy_product_confirm.php');
-                    } else {
-                        require(DIR_WS_MODULES . 'copy_product_confirm.php');
-                    }
+                    require zen_get_admin_module_from_directory($product_type, 'copy_product_confirm.php');
                     //get confirmation messages
                     if (isset($_SESSION['messageToStack']) && is_array($_SESSION['messageToStack'])) {
                         foreach ($_SESSION['messageToStack'] as $row) {
@@ -398,7 +395,7 @@ switch ($action) {
                         $_SESSION['messageToStack'] = '';
                     }
 
-                    $dup_products_id = !empty($dup_products_id) ? $dup_products_id : 0; // $dup_products_id is the new product id created by the previous module, is integer. This check added to satisfy IDE
+                    $dup_products_id = !empty($dup_products_id) ? $dup_products_id : 0; // $dup_products_id is the new product id created by the copy_products_confirm module, is integer. This check added to satisfy IDE
                     if ($dup_products_id > 0) {
                         if ($copy_specials === 'copy_specials_yes') {
                             $chk_specials = $db->Execute('SELECT * FROM ' . TABLE_SPECIALS . ' WHERE products_id= ' . (int)$id);
@@ -456,11 +453,8 @@ switch ($action) {
                     if ($debug_mpc) {//steve
                         echo __LINE__ . ': $_POST[\'products_id\']= ' . $_POST['products_id'] . ' | $product_type=' . $product_type . ' | $_POST[\'move_to_category_id\']= ' . $_POST['move_to_category_id'] . ' | $current_category_id=' . $current_category_id . '<br>';
                     }
-                    if (file_exists(DIR_WS_MODULES . $zc_products->get_handler($product_type) . '/move_product_confirm.php')) {
-                        require(DIR_WS_MODULES . $zc_products->get_handler($product_type) . '/move_product_confirm.php');
-                    } else {
-                        require(DIR_WS_MODULES . 'move_product_confirm.php');
-                    }
+                    require zen_get_admin_module_from_directory($product_type, 'move_product_confirm.php');
+                    
                     //get confirmation messages for display on this page
                     if (isset($_SESSION['messageToStack']) && is_array($_SESSION['messageToStack'])) {
                         foreach ($_SESSION['messageToStack'] as $row) {
@@ -530,11 +524,8 @@ switch ($action) {
                         $product_categories[] = $chk_category['categories_id'];
                     }
                     $_POST['product_categories'] = $product_categories;
-                    if (file_exists(DIR_WS_MODULES . $zc_products->get_handler($product_type) . '/delete_product_confirm.php')) {
-                        require(DIR_WS_MODULES . $zc_products->get_handler($product_type) . '/delete_product_confirm.php');
-                    } else {
-                        require(DIR_WS_MODULES . 'delete_product_confirm.php');
-                    }
+                    
+                    require zen_get_admin_module_from_directory($product_type, 'delete_product_confirm.php');
 
                     $products_modified[] = [
                         'id' => (int)$found_product->fields['products_id'],
@@ -561,11 +552,9 @@ switch ($action) {
         .dataTableHeadingContent {
             vertical-align: top !important; /* for results table headings aligned above toggle checkbox. !important required to override .less */
         }
-
         #tableMPCduplicateOptions {
             margin-bottom: 10px;
         }
-
         #tableMPCduplicateOptions th, #tableMPCduplicateOptions td {
             padding: 2px 5px;
         }
@@ -574,9 +563,10 @@ switch ($action) {
   <body>
     <!-- header //-->
     <?php
-    require(DIR_WS_INCLUDES . 'header.php');
+    require DIR_WS_INCLUDES . 'header.php';
     ?>
     <!-- header_eof //-->
+    
     <!-- body //-->
     <div class="container-fluid">
       <!-- body_text //-->
@@ -887,7 +877,7 @@ switch ($action) {
                     <thead>
                     <tr class="dataTableHeadingRow">
                         <th class="dataTableHeadingContent text-center"><?= TABLE_HEADING_SELECT ?>
-                            <br><label><?= TEXT_TOGGLE_ALL ?><br><input type="checkbox" onClick="toggle(this)"></label>
+                            <br><label class="font-weight-normal">(<?= TEXT_TOGGLE_ALL ?>)<br><input type="checkbox" onClick="toggle(this)"></label>
                             <script>
                                 function toggle(source) {
                                     let checkboxes = document.getElementsByClassName('checkboxMPC');
@@ -1067,20 +1057,6 @@ if ($action === 'find') { //disable the Confirm button until a selection is made
         $("input[type='checkBox']").change(function () {
             $("#submitConfirm").prop("disabled", !this.checked);
         }).change();
-
-            /*
-        $(function(){
-            $("input[type='checkBox']").change(function(){
-                let len = $("input[type='checkBox']:checked").length;
-                if (len === 0) {
-                    $("#submitConfirm").prop("disabled", true);
-                } else {
-                    $("#submitConfirm").removeAttr("disabled");
-                }
-            });
-            $("input[type='checkBox']").trigger('change');
-        });
-        */
     </script>
 <?php }
 ?>
