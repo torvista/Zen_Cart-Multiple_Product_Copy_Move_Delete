@@ -9,14 +9,21 @@ This awesome utility allows you to perform multiple actions in one process.
 Based on
 https://www.zen-cart.com/showthread.php?180447-Multiple-Products-(Copy-Move-Delete)
 
------------------------------
-Status as of 2024 10 09: Tested on Zen Cart 2.1 and php 8.3.12.
+## Compatibility
+Zen Cart: 2.1+ Earlier version not supported/need core modifications.
+PHP 8+
 
 This is a complex plugin, although it has been in use on my site for a long time, you may find a bug, so BEFORE making big changes on your production site TEST THOROUGHLY ON YOUR DEVELOPMENT SERVER.
 
 Please report all bugs on GitHub with steps how to reproduce.
 
------------------------------
+## Installation
+TEST ON YOUR DEVELOPMENT SERVER FIRST!
+
+1. Remove any previous version of this mod as per that version's instructions.
+
+1. Copy the files in "ADMIN FOLDER" to YOUR admin directory.
+All are new files/no core files should be overwritten.
 
 ## How to Use
 
@@ -33,47 +40,16 @@ Click the Confirm button and all the checked products will be now linked as Link
 
 Clicking the "Return To Catalog Entry" button after the copy is done will open the destination category for review.
 
-## Installation
-TEST ON YOUR DEVELOPMENT SERVER FIRST!
 
-1. Remove any previous version of this mod as per that version's instructions.
-
-1. Copy the files in "ADMIN FOLDER" to YOUR admin directory.
-All are new files/no core files should be overwritten.
-
-1. Refresh the Admin screen.
-The menu entry should be added to the Admin->Catalog section automatically.
-1. REQUIRED CORE FILE MODIFICATIONS
-
-    Multiple Product Copy requires modifications to two core module files for copy and move
-	
-	These files are normally used for one product/ are only run once and then redirect to the category listing page.  
-	To allow them to be run multiple times (for multiple copy/move) and to return back to the Multiple Product Copy results, a clause needs to be added around the redirect at the end of each file.
-
-    The changes required are in these files, which you should have already copied to ADMIN/includes/modules
-
-    /ADMIN FOLDER/includes/modules/copy_to_confirm. MPC FOR MERGING php  
-    /ADMIN FOLDER/includes/modules/move_product_confirm. MPC FOR MERGING php
-
-They are named as such to prevent accidental overwriting.  
-The original ZC158 files are also included for reference/to show the differences.
-
-    Compare each file to yours and merge the differences to yours.
-
-    If you are using other custom files on your Product Types for the files:
-    copy_to_confirm.php
-    move_product_confirm.php
-
-    you will need to add the similar IF statement around the redirect on the last line of the file.
-   
 ## Uninstall
 
 a) Use the backup you kept of this installation fileset to compare and delete the files from your site.
 
 b) Copy, paste and run the uninstall SQL in the Admin->SQLpatch tool or phpMyAdmin to remove the admin menu page item.
 
----------------------
+
 ## Changelog
+2025 onwards see repository PRs
 2024 10 10: simplify javascript, remove old function, rename custom function, convert defines to lang. file
 2024 10 09: php echo short tags  
 2023 04 23: minor IDE fettling, fix for confirmation text for moved products, update debug function, update modified core files

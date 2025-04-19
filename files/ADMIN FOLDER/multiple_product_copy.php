@@ -6,21 +6,22 @@ declare(strict_types=1);
  * Plugin Multiple Product Copy
  * @link https://github.com/torvista/Zen_Cart-Multiple_Products_Copy_Move_Delete
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version 06/02/2025 torvista
+ * @version 19/04/2025 torvista
  */
 
 require('includes/application_top.php');
 
-///////////////////////////////////////////////////////
-//temporary debugging code: to be removed if ever this gets into core code...along with the various debugging echos
 /** for phpStorm inspections
  * @var messageStack $messageStack
  * @var zcObserverLogEventListener $zco_notifier
  * @var products $zc_products
  * @var queryFactory $db
  */
+
+// set to true for debugging output to screen
 $debug_mpc = false;
-if ($debug_mpc) {//steve debug
+
+if ($debug_mpc) {
     ob_start();
     if (!function_exists('mv_printVar')) {
         /**
@@ -51,23 +52,19 @@ if ($debug_mpc) {//steve debug
             echo '</pre><br>';
         }
     }
-    mv_printVar($_POST);//steve debug
-    $output = ob_get_clean();//steve debug
-    $messageStack->add($output, 'info');//steve debug
+    mv_printVar($_POST);
+    $output = ob_get_clean();
+    $messageStack->add($output, 'info');
 }
-//eof temporary debugging code
-///////////////////////////////////////////////////////////
 
 require(DIR_WS_CLASSES . 'currencies.php');
 $currencies = new currencies();
-//////////////////////////////////////////////
-//File-specific function
-//todo replace
+
 /**
  * @param $manufacturers_id
- * @return mixed|string
+ * @return string
  */
-function mpc_get_manufacturers_name($manufacturers_id)
+function mpc_get_manufacturers_name($manufacturers_id): string
 {
     global $db;
     $manufacturer = $db->Execute('SELECT manufacturers_name FROM ' . TABLE_MANUFACTURERS . ' WHERE manufacturers_id=' . (int)$manufacturers_id . ' LIMIT 1');
@@ -77,12 +74,17 @@ function mpc_get_manufacturers_name($manufacturers_id)
     return $manufacturer->fields['manufacturers_name'];
 }
 
-/////////////////////////////////////////////////////////////
-$action = !empty($_GET['action']) ? $_GET['action'] : ''; // initial page load: set default action to '' to show the search form (when $action is set, language selection dropdown is hidden)
-$copy_options = ['link', 'duplicate', 'move']; // allowed Copy/Move options
-$delete_options = ['delete_specials', 'delete_linked', 'delete_all']; // the allowed Delete options
+// Initial page load: set default action to '' to show the search form.
+// When $action is set, language selection dropdown is hidden
+$action = !empty($_GET['action']) ? $_GET['action'] : '';
+// The allowed Copy/Move options
+$copy_options = ['link', 'duplicate', 'move'];
+// The allowed Delete options
+$delete_options = ['delete_specials', 'delete_linked', 'delete_all'];
 
-$copy_as = !empty($_POST['copy_as']) ? $_POST['copy_as'] : $_POST['copy_as'] = 'link'; // initial page load: set default function/radio button to Copy Linked (safest)
+// Initial page load: set default function/radio button to "Copy Linked" (safest)
+$copy_as = !empty($_POST['copy_as']) ? $_POST['copy_as'] : $_POST['copy_as'] = 'link';
+
 if (in_array($copy_as, $delete_options, true)) {
     $delete_option = true;
 } elseif (in_array($copy_as, $copy_options, true)) {
@@ -166,7 +168,7 @@ if ($action === 'find' || $action === 'confirm') { // validate form values from 
             break;
     }
 
-    if ($error_message !== '') {
+    if (!empty($error_message)) {
         $messageStack->add($error_message);
         $action = '';
     } elseif (!$delete_option) { // Build a list of the products already in the target category, not for Delete. This is used in both 'find' and 'confirm'.
@@ -180,7 +182,7 @@ if ($action === 'find' || $action === 'confirm') { // validate form values from 
     if ($action === 'confirm' && $error_message === '') { // perform additional validations prior to actual Copy/Move/Delete
         if (isset($_POST['product_count'], $_POST['product'])) {
             $cnt = (int)$_POST['product_count']; // total of products as found by search / as listed on Preview (find) page
-            if ($debug_mpc) {//steve
+            if ($debug_mpc) {
                 echo __LINE__ . ': $cnt=' . $cnt . '<br>';
             }
             $found_string = explode(',', $_POST['items_found']); // make an array of product ids as found by the search/displayed on Preview page 2
@@ -197,7 +199,7 @@ if ($action === 'find' || $action === 'confirm') { // validate form values from 
                 return (int)$value;
             }, $_POST['category']);
 
-            if ($debug_mpc) {//steve
+            if ($debug_mpc) {
                 echo __LINE__;
                 mv_printVar($products_selected);
                 mv_printVar($categories_selected);
@@ -330,7 +332,7 @@ switch ($action) {
         $limit = ' LIMIT ' . $max_input_vars_limit; //product results + category results + 10 more
         $search_sql .= $where_str . $order_by_str . $limit;
         $search_results = $db->Execute($search_sql);
-        if ($debug_mpc) {//steve debug
+        if ($debug_mpc) {
             $messageStack->add($search_sql, 'info');
         }
         if ($search_results->EOF) {
@@ -341,7 +343,7 @@ switch ($action) {
 
     case 'confirm':
         $products_modified = [];
-        if ($debug_mpc) {//steve
+        if ($debug_mpc) {
             echo __LINE__;
             mv_printVar($products_selected);
             mv_printVar($categories_selected);
@@ -450,11 +452,11 @@ switch ($action) {
                         $current_category_id = $categories_selected[$key];
                     }
                     $product_type = zen_get_products_type($id);// for move_product_confirm
-                    if ($debug_mpc) {//steve
+                    if ($debug_mpc) {
                         echo __LINE__ . ': $_POST[\'products_id\']= ' . $_POST['products_id'] . ' | $product_type=' . $product_type . ' | $_POST[\'move_to_category_id\']= ' . $_POST['move_to_category_id'] . ' | $current_category_id=' . $current_category_id . '<br>';
                     }
                     require zen_get_admin_module_from_directory($product_type, 'move_product_confirm.php');
-                    
+
                     //get confirmation messages for display on this page
                     if (isset($_SESSION['messageToStack']) && is_array($_SESSION['messageToStack'])) {
                         foreach ($_SESSION['messageToStack'] as $row) {
@@ -524,7 +526,7 @@ switch ($action) {
                         $product_categories[] = $chk_category['categories_id'];
                     }
                     $_POST['product_categories'] = $product_categories;
-                    
+
                     require zen_get_admin_module_from_directory($product_type, 'delete_product_confirm.php');
 
                     $products_modified[] = [
@@ -566,7 +568,7 @@ switch ($action) {
     require DIR_WS_INCLUDES . 'header.php';
     ?>
     <!-- header_eof //-->
-    
+
     <!-- body //-->
     <div class="container-fluid">
       <!-- body_text //-->
