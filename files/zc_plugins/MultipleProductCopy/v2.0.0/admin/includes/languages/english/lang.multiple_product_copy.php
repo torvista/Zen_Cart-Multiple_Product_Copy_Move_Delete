@@ -1,10 +1,16 @@
 <?php
 
 declare(strict_types=1);
-// Plugin Multiple Product Copy
-// English
-// https://github.com/torvista/Zen_Cart-Multiple_Products_Copy_Move_Delete
-// @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
+
+/**
+ * part of the Multiple Product Copy Plugin
+ * @link https://github.com/torvista/Zen_Cart-Multiple_Products_Copy_Move_Delete
+ * @copyright Copyright 2025 Zen Cart Development Team
+ * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
+ * @author torvista, Ajeh
+ * @version $Id: torvista 2025-04-20
+ */
+
 $define = [
     'HEADING_TITLE' => 'Multiple Product Copy/Move/Delete',
 
@@ -121,8 +127,9 @@ $define = [
 //CONFIRM page 3
     'BUTTON_NEW_SEARCH' => 'New Search',
 
-//Confirm Copy Linked
-    'TEXT_PRODUCTS_COPIED_TO' => '%1$u product(s) copied to Category "%3$s" ID#%2$u ',
+//Confirm Copy as Linked/Copy as Duplicate
+    'TEXT_PRODUCTS_COPIED_TO_LINK' => '%1$u product(s) linked into Category "%3$s" ID#%2$u ',
+    'TEXT_PRODUCTS_COPIED_TO_DUPLICATE' => '%1$u product(s) duplicated to Category "%3$s" ID#%2$u ',
 //Confirm Moved
 //'TEXT_PRODUCTS_MOVED_TO' => '%1$u product(s) moved to Category "%3$s" ID#%2$u ',
 

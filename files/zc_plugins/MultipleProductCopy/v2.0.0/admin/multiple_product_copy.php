@@ -3,10 +3,12 @@
 declare(strict_types=1);
 
 /**
- * Plugin Multiple Product Copy
+ * part of the Multiple Product Copy Plugin
  * @link https://github.com/torvista/Zen_Cart-Multiple_Products_Copy_Move_Delete
+ * @copyright Copyright 2025 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
- * @version 19/04/2025 torvista
+ * @author torvista, Ajeh
+ * @version $Id: torvista 2025-04-20
  */
 
 require('includes/application_top.php');
@@ -773,7 +775,7 @@ switch ($action) {
                     <?php
                     echo $search_criteria;
                     if ($action === 'confirm' || $action === 'multiple_product_copy_return') { ?>
-                        <h4><?= sprintf(TEXT_PRODUCTS_COPIED_TO, count($products_modified), $target_category_id, zen_output_generated_category_path($target_category_id)) ?></h4>
+                        <h4><?= sprintf(TEXT_PRODUCTS_COPIED_TO_LINK, count($products_modified), $target_category_id, zen_output_generated_category_path($target_category_id)) ?></h4>
                     <?php }
                     break;
 
@@ -811,7 +813,7 @@ switch ($action) {
                     </div>
                     <?php
                     if ($action === 'confirm' || $action === 'multiple_product_copy_return') { ?>
-                        <h4><?= sprintf(TEXT_PRODUCTS_COPIED_TO, count($products_modified), $target_category_id, zen_output_generated_category_path($target_category_id)) ?></h4>
+                        <h4><?= sprintf(TEXT_PRODUCTS_COPIED_TO_DUPLICATE, count($products_modified), $target_category_id, zen_output_generated_category_path($target_category_id)) ?></h4>
                     <?php }
                     break;
 
