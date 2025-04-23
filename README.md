@@ -50,7 +50,6 @@ a) Use the backup you kept of this installation fileset to compare and delete th
 b) Copy, paste and run the uninstall SQL in the Admin->SQLpatch tool or phpMyAdmin to remove the admin menu page item.
 
 ## Changelog
-2025 onwards see repository PRs  
 2025 04 20 Rework as encapsulated plugin.
 
 2024 10 10: simplify javascript, remove old function, rename custom function, convert defines to lang. file
