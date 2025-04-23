@@ -1,4 +1,4 @@
-# Multiple Product Copy-Move-Delete for Zen Cart v2.0.0
+# Multiple Product Copy-Move-Delete for Zen Cart
 
 This awesome utility allows you to perform multiple actions in one process.
 
