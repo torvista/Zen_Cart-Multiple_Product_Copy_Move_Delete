@@ -10,10 +10,10 @@ Based on an orginal work by Ajeh:
 https://www.zen-cart.com/showthread.php?180447-Multiple-Products-(Copy-Move-Delete)
 
 ## Compatibility
-Zen Cart: 2.1+ Earlier versions not supported/need core modifications.
-PHP 8+
+Zen Cart: 2.1+. Earlier versions not supported/need core modifications.  
+PHP 8+.
 
-This is a complex plugin. Although it has been in use on my site for a long time, you may find a bug, so BEFORE making big changes on your production site TEST THOROUGHLY ON YOUR DEVELOPMENT SERVER.
+This is a complex plugin. Although it has been in use on my site for a long time, you may find a bug, so BEFORE making big changes on your production site, TEST THOROUGHLY ON YOUR DEVELOPMENT SERVER.
 
 Please report all bugs on GitHub with steps how to reproduce.
 
