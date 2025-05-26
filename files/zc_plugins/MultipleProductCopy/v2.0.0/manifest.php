@@ -16,7 +16,7 @@ return [
     'pluginName' => 'Multiple Product Copy',
     'pluginDescription' => 'Perform bulk product actions for Copy-link, Duplicate, Move, Delete etc...',
     'pluginAuthor' => 'torvista, ajeh',
-    'pluginId' => 0, // ID from Zen Cart forum
+    'pluginId' => 2404, // ID from Zen Cart forum
     'zcVersions' => ['v210'],
     'changelog' => 'https://github.com/torvista/Zen_Cart-Multiple_Products_Copy_Move_Delete/commits/main/', // online URL (eg github release tag page, or changelog file there) or local filename only, ie: changelog.txt (in same dir as this manifest file)
     'github_repo' => 'https://github.com/torvista/Zen_Cart-Multiple_Products_Copy_Move_Delete', // url
