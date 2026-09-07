@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @copyright Copyright 2025 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
  * @author torvista, Ajeh
- * @version $Id: torvista 2025-04-20
+ * @version $Id: torvista 2025-08-22
  */
 
 use Zencart\PluginSupport\ScriptedInstaller as ScriptedInstallBase;
@@ -20,10 +20,14 @@ class ScriptedInstaller extends ScriptedInstallBase
         zen_deregister_admin_pages(['multipleProductCopy']);//remove original plugin adminpage name
         zen_register_admin_page(
             'catalogMultipleProductCopy', 'BOX_CATALOG_MULTIPLE_PRODUCT_COPY', 'FILENAME_MULTIPLE_PRODUCT_COPY', '', 'catalog', 'Y');
+
+        parent::executeInstall();
     }
 
     protected function executeUninstall(): void
     {
         zen_deregister_admin_pages(['catalogMultipleProductCopy']);
+
+        parent::executeUninstall();
     }
 }

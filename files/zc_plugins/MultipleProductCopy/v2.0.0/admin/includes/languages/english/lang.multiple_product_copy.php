@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @copyright Copyright 2025 Zen Cart Development Team
  * @license http://www.zen-cart.com/license/2_0.txt GNU Public License V2.0
  * @author torvista, Ajeh
- * @version $Id: torvista 2025-04-20
+ * @version $Id: torvista 2026-09-207
  */
 
 $define = [
@@ -35,7 +35,7 @@ $define = [
     'TEXT_COPY_AS_DELETE_SPECIALS' => 'Delete Specials from Products',
     'TEXT_COPY_AS_DELETE_LINKED' => 'Delete Linked Products',
     'TEXT_COPY_AS_DELETE_ALL' => 'Delete Any Products',
-    'TEXT_COPY_AS_DELETE_ALL_INFO' => 'This option allows the multiple permanent deletion of products. Selection of any product (whether linked/master) will delete <span style="text-decoration: underline">ALL INSTANCES</span> (both master and linked) of that product. USE WITH CARE and ensure you have a verified backup of your database first!',
+    'TEXT_COPY_AS_DELETE_ALL_INFO' => 'This option allows the multiple permanent deletion of products. Selection of any product (whether linked/master) will delete <span style="text-decoration: underline;">ALL INSTANCES</span> (both master and linked) of that product. USE WITH CARE and ensure you have a verified backup of your database first!',
 
 // Search Criteria
     'TEXT_ENTER_CRITERIA' => 'Search/Filter Criteria:',

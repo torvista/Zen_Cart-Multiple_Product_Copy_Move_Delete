@@ -1,19 +1,19 @@
 # Multiple Product Copy-Move-Delete for Zen Cart
 
-This awesome utility allows you to perform multiple actions in one process.
+This utility allows you to perform various actions on multiple products.
 
 * Copy (as linked or duplicate) multiple products from one category to another
 * Delete multiple products
 * Move multiple products
 
-Based on an orginal work by Ajeh:  
+Based on an original work by Ajeh:  
 https://www.zen-cart.com/showthread.php?180447-Multiple-Products-(Copy-Move-Delete)
 
 ## Compatibility
-Zen Cart: 2.1+ Earlier versions not supported/need core modifications.
+Zen Cart: 2.1+ (including ZC3). Earlier versions are not supported/need core modifications.
 PHP 8+
 
-This is a complex plugin. Although it has been in use on my site for a long time, you may find a bug, so BEFORE making big changes on your production site TEST THOROUGHLY ON YOUR DEVELOPMENT SERVER.
+This is a complex plugin. Although it has been in use on my site for a long time, you may find a bug, so BEFORE making big changes on your production site TEST THAT ACTION ON YOUR DEVELOPMENT SERVER.
 
 Please report all bugs on GitHub with steps how to reproduce.
 
@@ -75,8 +75,6 @@ check/uncheck all selectboxes with javascript
 
 strict comparisons  
 html validation  
-
-2019 10 torvista: put on Github.
 
 2013 Changes to v1392
 Added Delete from Linked Category. Added Delete Specials
